@@ -33,7 +33,7 @@ export default function ChatInput() {
         value={text}
         onKeyDown={handleKeyDown}
         onChange={(e) => setText(e.target.value)}
-        className="flex min-h-[100px] max-h-[400px] w-full rounded-lg border border-input bg-neutral-100 px-3 py-3 text-base ring-offset-background placeholder:text-muted-foreground placeholder:text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus:ring-black focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+        className="flex min-h-[100px] max-h-[400px] w-full rounded-lg border border-input bg-neutral-100 px-3 py-3 text-base ring-offset-background placeholder:text-muted-foreground placeholder:text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-0 focus:ring-black focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
         placeholder="Send a message..."
       ></textarea>
 
