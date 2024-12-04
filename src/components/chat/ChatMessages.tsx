@@ -1,8 +1,7 @@
 "use client";
 
 import { useChat } from "@/context/ChatContext";
-import UserMessages from "./UserMessages";
-import ModelMessages from "./ModelMessages";
+import { UserMessages, ModelMessages } from "./TemplateMessages";
 
 
 export default function ChatMessages() {
