@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  swcMinify: true,
+  //swcMinify: true,
   modularizeImports: {
     '@mui/material': {
       transform: '@mui/material/{{member}}',

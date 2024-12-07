@@ -5,10 +5,11 @@ import StopIcon from '@mui/icons-material/Stop';
 
 interface IconButtonChatProps {
   name: "send" | "pause"; // Nombre del ícono a renderizar
+  disabled?: boolean; // Deshabilitar el botón
   onClick: () => void; // Función al hacer clic
 }
 
-export default function IconButtonChat({ name, onClick }: IconButtonChatProps) {
+export default function IconButtonChat({ name, onClick, disabled }: IconButtonChatProps) {
   let IconComponent;
   switch (name) {
     case "send":
@@ -25,7 +26,7 @@ export default function IconButtonChat({ name, onClick }: IconButtonChatProps) {
     <IconButton
       onClick={onClick}
       size="small"
-      
+      disabled={disabled}
       style={{
         backgroundColor: "#3730a3", // Color sólido (azul)
         color: "#fff", // Ícono en blanco
