@@ -1,57 +1,40 @@
 "use client";
-import React, { createContext, useContext, useState } from "react";
-
-
-interface Message {
-  role: "user" | "model" 
-  content: string; 
-}
+import React, { createContext, useContext } from "react";
+import { useChat } from "ai/react";
 
 interface ChatContextType {
-  messages: Message[];
-  addMessage: (message: Message) => void;
-  removeLastMessage: () => void;
-  updateLastMessageContent: (content: string) => void; // Add this line
+  input: string;
+  messages: { id: string; content: string; role: string }[];
+  handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleSubmit: () => void;
+  isLoading: boolean;
 }
 
 // Crear el contexto
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
-
-export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-
-
-  const addMessage = (message: Message) => {
-    setMessages((prev) => [...prev, message]);
-  };
-
-  const removeLastMessage = () => {
-    setMessages((prev) => prev.slice(0, prev.length - 1));
-  }
-
-  const updateLastMessageContent = (content: string) => {
-    setMessages((prevMessages) => {
-      if (prevMessages.length === 0) return prevMessages;
-      const updatedMessages = [...prevMessages];
-      const lastIndex = updatedMessages.length - 1;
-      updatedMessages[lastIndex] = {
-        ...updatedMessages[lastIndex],
-        content: content,
-      };
-      return updatedMessages;
-    });
-  };
-
+export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { input, messages, handleInputChange, handleSubmit, isLoading } =
+    useChat({});
 
   return (
-    <ChatContext.Provider value={{ messages, addMessage, removeLastMessage, updateLastMessageContent }}>
+    <ChatContext.Provider
+      value={{
+        input, 
+        messages,
+        handleInputChange,
+        handleSubmit,
+        isLoading,
+      }}
+    >
       {children}
     </ChatContext.Provider>
   );
 };
 
-export const useChat = () => {
+export const useChatContext = () => {
   const context = useContext(ChatContext);
   if (!context) {
     throw new Error("useChat must be used within a ChatProvider");
