@@ -1,8 +1,8 @@
 "use client";
 
 import ChatInput from "@/components/chat/ChatInput";
-import ChatMessages from "@/components/chat/ChatMessages";
 import Navbar from "@/components/navbar/Navbar";
+import { ChatMessages } from "@/components/chat/ChatMessages";
 import { useChatContext } from "@/context/ChatContext";
 import { useEffect, useRef } from "react";
 

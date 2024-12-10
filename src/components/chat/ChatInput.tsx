@@ -4,7 +4,7 @@ import IconButtonChat from "../buttons/IconButtonChat";
 import { useChatContext } from "@/context/ChatContext";
 
 export default function ChatInput() {
-  const { input, handleInputChange, handleSubmit, isLoading } =
+  const { input, stop, handleInputChange, handleSubmit, isLoading } =
     useChatContext();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -27,9 +27,9 @@ export default function ChatInput() {
 
       <div className="absolute bottom-2 right-2 flex space-x-2 z-100">
         <IconButtonChat
-          disabled={isLoading}
-          name="send"
-          onClick={handleSubmit}
+          //disabled={isLoading}
+          name={isLoading? "stop":"send"}
+          onClick={isLoading? stop: handleSubmit}
         />
       </div>
     </div>

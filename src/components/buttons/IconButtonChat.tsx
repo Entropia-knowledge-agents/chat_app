@@ -4,7 +4,7 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import StopIcon from '@mui/icons-material/Stop';
 
 interface IconButtonChatProps {
-  name: "send" | "pause"; // Nombre del ícono a renderizar
+  name: "send" | "stop"; // Nombre del ícono a renderizar
   disabled?: boolean; // Deshabilitar el botón
   onClick: () => void; // Función al hacer clic
 }
@@ -15,7 +15,7 @@ export default function IconButtonChat({ name, onClick, disabled }: IconButtonCh
     case "send":
       IconComponent = ArrowUpwardIcon; 
       break;
-    case "pause":
+    case "stop":
       IconComponent = StopIcon; 
       break;
     default:
