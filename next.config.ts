@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   distDir: 'build',
   output: 'standalone',
+  assetPrefix: '/',
   //swcMinify: true,
   modularizeImports: {
     '@mui/material': {

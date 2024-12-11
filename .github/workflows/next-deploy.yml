@@ -11,46 +11,56 @@ env:
   WEBAPP_NAME: "rag-agent"
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout del código fuente
+      # Paso 1: Checkout del código fuente
       - uses: actions/checkout@v4
 
-      # Configurar la versión de Node.js
+      # Paso 2: Configurar la versión de Node.js
       - name: Set up Node.js version
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
 
-      # Cargar la variable de entorno en el entorno de ejecución de Actions
+      # Paso 3: Cargar las variables de entorno necesarias
       - name: Set environment variables
         run: |
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
 
-      # Crear el archivo .env para Next.js (opcional)
+      # Paso 4: Crear el archivo .env (opcional pero recomendado)
       - name: Create .env file
         run: |
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
 
-      # Instalar dependencias y construir la aplicación
+      # Paso 5: Instalar dependencias y construir la aplicación
       - name: Install and build
         run: |
           npm install
           npm run build
-          # Verificar y mover la carpeta static si existe
-          if [ -d "./build/static" ]; then
-            mkdir -p ./build/standalone/.next
-            mv ./build/static ./build/standalone/.next/static
-          fi
-          # Verificar y mover la carpeta public si existe
-          if [ -d "./public" ]; then
-            mkdir -p ./build/standalone/public
-            mv ./public ./build/standalone/public
-          fi
 
-      # Desplegar la aplicación a Azure Web App
+      # Paso 6: Organizar los archivos estáticos y la estructura para el despliegue
+      - name: Organize files for deployment
+        run: |
+          # Crear las carpetas necesarias para la estructura standalone
+          mkdir -p build/standalone/.next/static
+          mkdir -p build/standalone/public
+          # Copiar archivos estáticos generados
+          cp -r ./build/.next/static ./build/standalone/.next/static
+          # Copiar archivos de la carpeta public si existen
+          if [ -d "./public" ]; then
+            cp -r ./public ./build/standalone/public
+          fi
+          # Copiar el server.js
+          cp ./server.js ./build/standalone/
+
+      # Paso 7: Comprimir la estructura para el despliegue
+      - name: Package application
+        run: |
+          zip -r app.zip build/standalone/*
+
+      # Paso 8: Desplegar la aplicación a Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -58,4 +68,4 @@ jobs:
           app-name: ${{ env.WEBAPP_NAME }}
           slot-name: "Production"
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: ./build/standalone
+          package: app.zip
