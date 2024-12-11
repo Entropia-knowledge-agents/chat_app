@@ -5,6 +5,8 @@ import Navbar from "@/components/navbar/Navbar";
 import { ChatMessages } from "@/components/chat/ChatMessages";
 import { useChatContext } from "@/context/ChatContext";
 import { useEffect, useRef } from "react";
+import { SessionProvider } from "next-auth/react";
+
 
 export default function Home() {
   const { messages } = useChatContext();
@@ -14,6 +16,7 @@ export default function Home() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   return (
+    <SessionProvider>
     <div className="h-screen flex flex-col justify-between items-center">
       <Navbar />
       <div className="flex-1 overflow-y-auto w-full  p-8">
@@ -29,5 +32,6 @@ export default function Home() {
         <ChatInput />
       </div>
     </div>
+    </SessionProvider>
   );
 }
