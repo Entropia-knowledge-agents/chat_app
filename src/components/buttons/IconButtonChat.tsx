@@ -1,5 +1,4 @@
-import { IconButton } from "@mui/material";
-
+import IconButton from '@mui/material/IconButton';
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import StopIcon from '@mui/icons-material/Stop';
 

@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     },
   },
   experimental: {
-    optimizeCss: true,
+    //optimizeCss: true,
   },
   httpAgentOptions: {
     keepAlive: true,

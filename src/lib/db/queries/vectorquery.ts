@@ -1,4 +1,4 @@
-import clientPromise from "@/lib/mongodb";
+import clientPromise from "@/lib/db/mongodb";
 
 interface VectorQueryResult {
   _id: string;

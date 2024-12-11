@@ -1,7 +1,7 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { generateEmbedding } from "@/lib/ai/embeddings";
-import { vectorQuery } from "@/lib/vectorquery";
+import { vectorQuery } from "@/lib/db/queries/vectorquery";
 
 export const maxDuration = 59;
 
