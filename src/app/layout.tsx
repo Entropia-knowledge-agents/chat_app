@@ -19,12 +19,12 @@ export const metadata = {
   openGraph: {
     title: "RAGnasium: track your RAG Agents",
     description:
-      "Herramienta de seguridad pública impulsada por IA para tu ciudad. Análisis y comparativas para decisiones informadas.",
-    url: "https://pacifico-ai.vercel.app",
-    siteName: "Pacífico.ai",
+      "Herramienta de entropía.ai para probar e interacturar con tus RAG Agents",
+    url: "https://rag-agent-dgcda0ekcphcgcc8.eastus-01.azurewebsites.net/login?callbackUrl=%2F",
+    siteName: "RAGnasium",
     images: [
       {
-        url: "https://pacifico-ai.vercel.app/img/og-image.png",
+        url: "https://www.entropia.ai/sections/assets/ENT_Logotipo_Negro.png",
         width: 1200,
         height: 630,
       },
