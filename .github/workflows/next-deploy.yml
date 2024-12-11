@@ -13,33 +13,36 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
+      # Checkout del código fuente
       - uses: actions/checkout@v4
 
+      # Configurar la versión de Node.js
       - name: Set up Node.js version
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
 
-      # Si tu aplicación necesita el MONGO_URI en tiempo de build
+      # Cargar la variable de entorno en el entorno de ejecución de Actions
       - name: Set environment variables
         run: |
-          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
 
-      # Si tu app requiere específicamente un archivo .env
+      # Crear el archivo .env para Next.js (opcional)
       - name: Create .env file
         run: |
-          echo "MONGO_URI=$MONGO_URI" > .env
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
 
+      # Instalar dependencias y construir la aplicación
       - name: Install and build
         run: |
           npm install
           npm run build
-          # Mover la carpeta 'static' generada por el build a la carpeta esperada por standalone
           mv ./build/static ./build/standalone/.next/static
-          # Mover 'public' a dentro de 'standalone'
           mv ./public ./build/standalone/public
 
+      # Desplegar la aplicación a Azure Web App
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
