@@ -2,9 +2,11 @@
 import { Button } from "@mui/material";
 import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   // status será "loading", "authenticated" o "unauthenticated".
   // session será la sesión actual si el usuario está autenticado.
@@ -12,6 +14,12 @@ export default function Navbar() {
   if (status === "loading") {
     return <div>Cargando...</div>;
   }
+
+  const LogOutHandler = async () => {
+    await signOut({ redirect: false });
+    router.push("/login");
+  };
+
 
   return (
     <div className="fixed top-0 left-0 w-full bg-neutral-30/80 backdrop-blur-lg py-2 px-4 z-50">
@@ -21,7 +29,7 @@ export default function Navbar() {
           {session?.user && (
             <Button
               variant="contained"
-              onClick={() => signOut()}
+              onClick={LogOutHandler}
               sx={{
                 backgroundColor: "#6D28D9",
                 color: "white",
