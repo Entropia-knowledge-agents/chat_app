@@ -3,7 +3,7 @@ name: Build and deploy Next.js app to Azure Web App
 on:
   push:
     branches:
-      - main
+      - main  
   workflow_dispatch:
 
 env:
@@ -11,18 +11,17 @@ env:
   WEBAPP_NAME: "rag-agent"
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Checkout del código fuente
       - uses: actions/checkout@v4
 
-      # Paso 2: Configurar la versión de Node.js
       - name: Set up Node.js version
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
+
 
       # Paso 3: Cargar las variables de entorno necesarias
       - name: Set environment variables
@@ -34,38 +33,18 @@ jobs:
         run: |
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
 
-      # Paso 5: Instalar dependencias y construir la aplicación
-      - name: Install and build
+      - name: npm install, build
         run: |
           npm install
           npm run build
+          mv ./build/static ./build/standalone/build
+          mv ./public ./build/standalone
 
-      # Paso 6: Organizar los archivos estáticos y la estructura para el despliegue
-      - name: Organize files for deployment
-        run: |
-          # Crear las carpetas necesarias para la estructura standalone
-          mkdir -p build/standalone/.next/static
-          mkdir -p build/standalone/public
-          # Copiar archivos estáticos generados
-          cp -r ./build/.next/static ./build/standalone/.next/static
-          # Copiar archivos de la carpeta public si existen
-          if [ -d "./public" ]; then
-            cp -r ./public ./build/standalone/public
-          fi
-          # Copiar el server.js
-          cp ./server.js ./build/standalone/
-
-      # Paso 7: Comprimir la estructura para el despliegue
-      - name: Package application
-        run: |
-          zip -r app.zip build/standalone/*
-
-      # Paso 8: Desplegar la aplicación a Azure Web App
-      - name: Deploy to Azure Web App
+      - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.WEBAPP_NAME }}
           slot-name: "Production"
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: app.zip
+          package: ./build/standalone

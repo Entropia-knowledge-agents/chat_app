@@ -1,6 +1,8 @@
-import type { NextConfig } from "next";
+// @ts-check
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+
+const nextConfig = {
   reactStrictMode: true,
   distDir: 'build',
   output: 'standalone',
@@ -24,4 +26,4 @@ const nextConfig: NextConfig = {
   generateEtags: true,
 };
 
-export default nextConfig;
+module.exports = nextConfig;
