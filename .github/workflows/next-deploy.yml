@@ -3,7 +3,7 @@ name: Build and deploy Next.js app to Azure Web App
 on:
   push:
     branches:
-      - main  
+      - main
   workflow_dispatch:
 
 env:
@@ -13,7 +13,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -22,14 +21,26 @@ jobs:
         with:
           node-version: "20.x"
 
-      - name: npm install, build, and test
+      # Si tu aplicación necesita el MONGO_URI en tiempo de build
+      - name: Set environment variables
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> $GITHUB_ENV
+
+      # Si tu app requiere específicamente un archivo .env
+      - name: Create .env file
+        run: |
+          echo "MONGO_URI=$MONGO_URI" > .env
+
+      - name: Install and build
         run: |
           npm install
           npm run build
-          mv ./build/static ./build/standalone/build
-          mv ./public ./build/standalone
+          # Mover la carpeta 'static' generada por el build a la carpeta esperada por standalone
+          mv ./build/static ./build/standalone/.next/static
+          # Mover 'public' a dentro de 'standalone'
+          mv ./public ./build/standalone/public
 
-      - name: "Deploy to Azure Web App"
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
