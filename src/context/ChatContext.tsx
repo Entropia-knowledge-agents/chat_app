@@ -8,6 +8,7 @@ interface ChatContextType {
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmit: () => void;
   isLoading: boolean;
+  stop: () => void;
 }
 
 // Crear el contexto
@@ -16,7 +17,7 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { input, messages, handleInputChange, handleSubmit, isLoading } =
+  const { input, messages, handleInputChange, handleSubmit, isLoading, stop } =
     useChat({});
 
   return (
@@ -27,6 +28,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         handleInputChange,
         handleSubmit,
         isLoading,
+        stop
       }}
     >
       {children}
