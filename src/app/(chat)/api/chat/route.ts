@@ -19,6 +19,7 @@ export async function POST(req: Request) {
 
     // Generar embeddings para el último mensaje
     const { embedding, usageTokens } = await generateEmbedding(lastMessageContent);
+    console.log("Usage tokens:", usageTokens);
 
     // Obtener documentos relevantes
     const retrievedDocs = await vectorQuery(embedding, "documents_catalogue", "documents_olas");
