@@ -39,8 +39,16 @@ jobs:
         run: |
           npm install
           npm run build
-          mv ./build/static ./build/standalone/.next/static
-          mv ./public ./build/standalone/public
+          # Verificar y mover la carpeta static si existe
+          if [ -d "./build/static" ]; then
+            mkdir -p ./build/standalone/.next
+            mv ./build/static ./build/standalone/.next/static
+          fi
+          # Verificar y mover la carpeta public si existe
+          if [ -d "./public" ]; then
+            mkdir -p ./build/standalone/public
+            mv ./public ./build/standalone/public
+          fi
 
       # Desplegar la aplicación a Azure Web App
       - name: Deploy to Azure Web App
