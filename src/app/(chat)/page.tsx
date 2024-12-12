@@ -17,7 +17,7 @@ export default function Home() {
   }, [messages]);
   return (
     <SessionProvider>
-    <div className="h-screen flex flex-col justify-between items-center">
+    <div className="h-screen flex flex-col justify-between items-center bg-slate-200 text-slate-700">
       <Navbar />
       <div className="flex-1 overflow-y-auto w-full  p-8">
         <div className="w-full justify-center flex items-center">
@@ -28,7 +28,7 @@ export default function Home() {
         <div ref={messagesEndRef}></div>
       </div>
 
-      <div className="w-full md:w-2/5 bg-neutral-50 p-6">
+      <div className="w-full md:w-2/5 bg-neutral-50 p-6 rounded-xl">
         <ChatInput />
       </div>
     </div>
