@@ -14,14 +14,14 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: "RAGnasium",
+  title: "RAG Lab",
   description: "A technology of entropía.ai",
   openGraph: {
-    title: "RAGnasium: track your RAG Agents",
+    title: "RAG Lab: Test, Track & Improve your Knowledge Agents",
     description:
       "Herramienta de entropía.ai para probar e interacturar con tus RAG Agents",
     url: "https://rag-agent-dgcda0ekcphcgcc8.eastus-01.azurewebsites.net/login?callbackUrl=%2F",
-    siteName: "RAGnasium",
+    siteName: "RAG Lab",
     images: [
       {
         url: "https://www.entropia.ai/sections/assets/ENT_Logotipo_Negro.png",

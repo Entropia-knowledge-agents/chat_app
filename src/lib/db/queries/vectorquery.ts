@@ -2,8 +2,9 @@ import clientPromise from "@/lib/db/mongodb";
 
 interface VectorQueryResult {
   _id: string;
-  text: string;
-  author: string;
+  ctx_chunk: string;
+  page: number;
+  chunk_id: number;
   url: string;
   score: number;
 }
@@ -33,8 +34,9 @@ export const vectorQuery = async (
       {
         $project: {
           _id: 1,
-          text: 1,
-          author: 1,
+          ctx_chunk: 1,
+          page: 1,
+          chunk_id: 1,
           url: 1,
           score: {
             $meta: "vectorSearchScore",
