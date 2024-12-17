@@ -2,6 +2,8 @@ import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
+import clientPromise from "@/lib/db/mongodb";
+
 
 export const maxDuration = 59;
 
@@ -22,7 +24,7 @@ export async function POST(req: Request) {
     console.log("Usage tokens:", usageTokens);
 
     // Obtener documentos relevantes
-    const retrievedDocs = await vectorQuery(embedding, "documents_catalogue", "documents_olas");
+    const retrievedDocs = await vectorQuery(embedding, "documents_content", "content_olas");
     console.log(retrievedDocs);
 
     // Tomar hasta 5 mensajes anteriores como contexto (excluyendo el último)
@@ -41,38 +43,70 @@ ${lastMessageContent}
 **Retrieved Chunks**:
 ${retrievedDocs.map((doc, i) => 
   `**Chunk ${i+1}:**
-  - Content: ${doc.text || "No text"}
-  - Author: ${doc.author || "Unknown"}
+  ${doc.ctx_chunk || "No text"}
+  - Page: ${doc.page || "Unknown"}
+  - Chunk in Page: ${doc.chunk_id || "Unknown"}
   - URL: ${doc.url || "Unknown URL"}
-  - Score: ${doc.score.toFixed(4) || "No score"}`
+  - Score: ${doc.score.toFixed(3) || "No score"}`
 ).join('\n\n')}
 `.trim();
 
+
     const result = streamText({
       model: openai("gpt-4o-mini"),
-      system: `
-You are a helpful AI assistant that uses information retrieval augmented generation. You will receive a user query and a set of topically relevant text chunks from various sources. Your task is to produce an answer **only using the information explicitly provided** in these retrieved chunks. **Do not add information that is not given.** If you lack enough detail to answer, clearly state that the necessary information was not found in the provided chunks.
+      system: `You are an AI assistant specialized in technical documentation and information retrieval. Your task is to provide accurate answers based exclusively on the provided documentation chunks.
 
-It is crucial to reference every piece of provided information, citing its source (e.g., URL, author, document title, etc.) directly in your answer. Your response should be formatted as Markdown, making correct use of links, quotes, lists, and other formatting elements as needed.
-
-Your primary goals are to:
-
-1. Use **only the given chunks**.
-2. Provide **explicit source references** for all information used.
-3. Render the answer using proper Markdown.
-
-If you cannot answer without introducing non-provided information, indicate this limitation.
-      `,
+      LANGUAGE AND FORMATTING:
+      - Detect the language of the user's query and respond in the same language
+      - Format responses using Markdown
+      - Use appropriate technical terminology for the detected language
+      - Include original quotes in their source language when relevant
+      
+      SOURCE VALIDATION:
+      - Use ONLY information from the provided chunks
+      - Verify source consistency and relevance
+      - Prioritize most recent sources when multiple references exist
+      - Indicate explicitly if information is outdated or ambiguous
+      
+      RESPONSE FORMAT:
+      1. Structure your answer using Markdown
+      2. Always include specific references using this format:
+         > According to [author] in "[title]"([url]) page [number]: [exact quote or answer]
+      3. Organize information in clear sections using headers. At the end, include a summary not a conclusion (if aplicable).
+      
+      INFORMATION HANDLING:
+      - If requested information is not in the chunks, state: "The provided documentation does not contain specific information about this topic"
+      - For technical topics, include examples only if explicitly present in sources
+      - When cross-references exist between documents, clearly indicate them
+      - If information appears contradictory between sources, highlight the discrepancy
+      
+      STRICT GUIDELINES:
+      - Do not make assumptions beyond provided information
+      - Do not combine with external knowledge
+      - Always respect regional/geographical context of sources
+      - Match the language of your response to the user's query language
+      
+      If you cannot provide a complete answer with available information, explain which specific aspects cannot be addressed based on current documentation.`,
       // Aquí agregamos el prompt recién construido como mensaje adicional para que el LLM lo use
       messages: [
-        ...messages.slice(0, -1), 
+        //...messages.slice(0, -1), 
         { role: "system", content: prompt }, 
         messages[messages.length - 1] // el último mensaje del usuario
       ],
-      onFinish({ text, usage }) {
+      async onFinish({ text, usage }) {
         // tu lógica aquí, por ejemplo para guardar historia o contabilizar tokens
         console.log(usage);
-        console.log("Response:", text);
+        // write in mongodb the user query, the response and the usage tokens
+        const client = await clientPromise;
+        const db = client.db("rag_lab");
+        const coll = db.collection("logs");
+        await coll.insertOne({
+          user_query: messages[messages.length - 1].content,
+          rag_ctx: prompt,
+          response: text,
+          usageTokens: usage,
+        });
+
       },
     });
 
