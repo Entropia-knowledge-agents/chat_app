@@ -4,18 +4,14 @@ import { z } from 'zod';
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
 
-
-const FilterValues = z.object({
-  publication_year: z.string().describe('One of the followings: 2007, 2008, ..., 2023, 2024. Si no estás seguro, no llenes este campo.'),
-  document_resource: z.string().describe('One of the followings: document, presentation, publication, report, scientific_paper. Si no estás seguro, no llenes este campo.'),
-});
-
 const doc_id = z.string().describe('doc_id from the documents')
 
 async function documentRetriever(query: string) {
   console.log("entró a la función de catalogo con la query:")
   console.log(query)
   const { embedding, usageTokens } = await generateEmbedding(query);
+  console.log('usageTokens')
+  console.log(usageTokens)
   const retrievedDocs = await vectorQuery(embedding, "documents_catalogue", "documents_olas", {});
   console.log('y obtuvo los siguintes documentos:')
   console.log(retrievedDocs)
@@ -31,6 +27,8 @@ async function documentRetriever2(query: string, doc_ids:object) {
   const filter = {"doc_id": {"$in": doc_ids}}
 
   const { embedding, usageTokens } = await generateEmbedding(query);
+  console.log('usageTokens')
+  console.log(usageTokens)
   const retrievedDocs = await vectorQuery(embedding, "documents_content", "content_olas", filter);
   console.log('y obtuvo los siguintes documentos:')
   console.log(retrievedDocs)
@@ -48,7 +46,7 @@ Tu objetivo es tanto recomendar documentos como proporcionar informacion especí
 la de catalogueRetriever que te permite acceder al catálogo para conocer los documentos más relevantes y la de documentRetriever que te permitirá 
 proporcionar información más específica dado los documentos seleccionados.
 
-No inventes datos, escoje los datos que mejor respondan la pregunta del usuario, si no encuentras información específica mencionalo.
+No inventes datos, debes estar seguro que los documentos que escojas responden de manera correcta y específica la pregunta del usuario, si no encuentras información específica mencionalo.
 Recuerda mencionar las referencias en formato Markdown.
 `
 
@@ -62,14 +60,14 @@ export async function POST(req: Request) {
     tools: {
       catalogueRetriever: tool(
         {
-          description: 'A tool to get the catalogue of the available documents based on the users question.',
+          description: 'A tool to get the catalogue of the available documents based on the users question, query should be in spanish.',
           parameters: z.object({ query: z.string()}),
           execute: async ({query}) => documentRetriever(query),
           }
       ),
       documentRetriever: tool(
         {
-          description: 'Use it read the available documents based on the document_id gotten from the tool catalogueRetriever.',
+          description: 'Use it read the available documents based on the document_id gotten from the tool catalogueRetriever. Query should be in spanish.',
           parameters: z.object({query: z.string(), doc_ids: z.array(doc_id).describe('All the doc_ids you consider relevant.')}),
           execute: async ({query, doc_ids}) => documentRetriever2(query, doc_ids),
           }

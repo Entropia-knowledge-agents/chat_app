@@ -12,7 +12,7 @@ export const vectorQuery = async (
   vector: number[],
   database: string,
   collection: string,
-  filter: Record<string, any>
+  filter: Record<string, unknown>
 ): Promise<VectorQueryResult[]> => {
   try {
     const client = await clientPromise;
