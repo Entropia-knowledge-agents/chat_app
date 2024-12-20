@@ -2,9 +2,8 @@ import clientPromise from "@/lib/db/mongodb";
 
 interface VectorQueryResult {
   _id: string;
-  ctx_chunk: string;
-  page: number;
-  chunk_id: number;
+  text: string;
+  author: string;
   url: string;
   score: number;
 }
@@ -12,7 +11,8 @@ interface VectorQueryResult {
 export const vectorQuery = async (
   vector: number[],
   database: string,
-  collection: string
+  collection: string,
+  filter: Record<string, unknown>
 ): Promise<VectorQueryResult[]> => {
   try {
     const client = await clientPromise;
@@ -26,25 +26,25 @@ export const vectorQuery = async (
           index: "vector_index",
           path: "embedding",
           queryVector: vector,
-          numCandidates: 150,
-          limit: 25,
-          filter: {},
+          numCandidates: 10,
+          limit: 5,
+          filter: filter,
         },
       },
       {
         $project: {
           _id: 1,
-          ctx_chunk: 1,
-          page: 1,
-          chunk_id: 1,
+          text: 1,
+          author: 1,
           url: 1,
+          doc_id:1,
+          ctx_chunk:1,
           score: {
             $meta: "vectorSearchScore",
           },
         },
       },
     ];
-
     // Ejecutar el pipeline de agregación y obtener los resultados como un array
     const results = await coll.aggregate(agg).toArray();
 
