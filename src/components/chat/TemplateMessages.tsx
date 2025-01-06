@@ -1,18 +1,22 @@
-// ModelMessages.tsx
-
-// ModelMessages.tsx
-
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import ActionButtons from "../buttons/LikeButtons";
 import { Markdown } from "@/components/utils/Markdown";
 import { memo } from "react";
 
-interface MessageProps {
+interface toolProps {
+  toolName: string;
+}
+
+export interface MessageProps {
+  id?: string;
   content: string;
+  role?: string;
+  toolInvocations?: toolProps[];
+  isLoading?: boolean;
 }
 
 export const ModelMessages = memo(
-  function ModelMessages({ content }: MessageProps) {
+  function ModelMessages({ content, isLoading }: MessageProps) {
     return (
       <div className="grid grid-cols-12">
         <div className="col-span-11 flex items-start space-x-2">
@@ -32,7 +36,9 @@ export const ModelMessages = memo(
               padding: "10px",
             }}
           >
+            {isLoading ? (<p className="loader-shine">{content}</p>) : (
             <Markdown>{content}</Markdown>
+            )}
             <ActionButtons />
           </div>
         </div>
