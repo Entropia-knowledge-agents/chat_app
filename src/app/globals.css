@@ -25,3 +25,41 @@ body {
   font-family: "Mona Sans", sans-serif !important;
   text-transform: none !important;
 }
+
+
+.loader-shine {
+  /* Permite que la animación solo afecte al texto */
+  display: inline-block;
+  position: relative;
+  
+  /* El color de fondo real del texto será "trasparente",
+     aprovechamos un degradado como "máscara" */
+  color: #475569; /* Si necesitas un color de fallback (por accesibilidad) */
+  background: linear-gradient(
+    to right,
+    rgba(1, 10, 136, 0.2) 0%,
+    rgb(48, 0, 94) 50%,
+    rgba(57, 1, 109, 0.589) 100%
+  );
+  
+  /* Recortamos el degradado para que aparezca dentro de las letras */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; 
+  background-clip: text;
+  
+  /* Ajustamos el tamaño del fondo para que la animación recorra el texto */
+  background-size: 200% auto;
+  
+  /* Aplicamos la animación */
+  animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
