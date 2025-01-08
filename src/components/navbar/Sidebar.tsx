@@ -12,7 +12,7 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
   return (
     <div className="flex flex-col items-start">
       {/* Título del menú */}
-      <h2 className="text-lg font-bold mb-4">Menú</h2>
+      <h2 className="text-lg font-bold mb-4">Menu</h2>
       {/* Pestaña 1 */}
       <button
         onClick={() => setOption("OLAS")}
