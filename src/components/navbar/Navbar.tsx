@@ -31,7 +31,7 @@ export default function Navbar() {
               variant="contained"
               onClick={LogOutHandler}
               sx={{
-                backgroundColor: "#6D28D9",
+                backgroundColor: "#1f2f79",
                 color: "white",
                 "&:hover": {
                   backgroundColor: "#5B21B6",

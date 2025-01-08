@@ -15,7 +15,7 @@ function LoadingBubble({ toolName }: { toolName?: string }) {
   return <ModelMessages content={name} isLoading={true}/>;
 }
 
-function ChatMessagesBase({ messages }: { messages: MessageProps[] }) {
+function ChatMessagesBase({ messages}: { messages: MessageProps[]}) {
   const { awaitingResponse, currentToolCall } = useChatContext();
 
   /**
