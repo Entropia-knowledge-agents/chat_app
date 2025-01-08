@@ -1,6 +1,6 @@
 import { openai } from '@ai-sdk/openai';
 import {streamText, tool } from 'ai';
-import { z } from 'zod';
+import { z } from "zod";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
 
@@ -27,7 +27,6 @@ No inventes datos, debes estar seguro que los documentos que escojas responden d
 Recuerda mencionar las referencias en formato Markdown e incluir el número de página.
 SIEMPRE DEBES RESPONDER EN ESPAÑOL.
 `
-
 //INGLES:
 
 const prompt_en_OLAS = `You are an expert energy analyst in Latin America and the Caribbean who works with the data available in the Energy Hub
@@ -73,16 +72,15 @@ Não invente dados, deve ter a certeza de que os documentos escolhidos respondem
 Lembre-se de mencionar as referências em formato Markdown e de incluir o número da página.
 Deve sempre responder em português.
 `
-
 export const maxDuration = 30;
-
 
 // Tool document retriever for catalogue
 async function documentRetriever(query: string, collection_catalogue: string) {
   const { embedding, usageTokens } = await generateEmbedding(query);
-  console.log('usageTokens')
-  console.log(usageTokens)
+  console.log('documentRetriever con la query', query)
+  console.log('usageTokens', usageTokens)
   const retrievedDocs = await vectorQuery(embedding, 'documents_catalogue', collection_catalogue, {});
+  console.log('docs', retrievedDocs)
   return retrievedDocs;
 }
 
@@ -91,9 +89,11 @@ async function documentRetriever2(query: string, doc_ids:object, collection_docs
   const filter = {"doc_id": {"$in": doc_ids}}
 
   const { embedding, usageTokens } = await generateEmbedding(query);
-  console.log('usageTokens')
-  console.log(usageTokens)
+
+  console.log('documentRetriever2 con la query', query)
+  console.log('usageTokens', usageTokens)
   const retrievedDocs = await vectorQuery(embedding, 'documents_content', collection_docs, filter);
+  console.log('docs', retrievedDocs)
   return retrievedDocs;
 }
 
@@ -124,7 +124,7 @@ function prompt_y_collection(option: string, language: string){
     // para conectarnos al catalogo de energía
     collection_catalogue = "documents_energy";
     // para conectarnos a los documentos de energía
-    collection_docs = "content_energia";
+    collection_docs = "content_energy";
     if (language ==  'es') {
       prompt = prompt_es_energia + prompt_es_gral;
     }
@@ -142,10 +142,10 @@ const doc_id = z.string().describe('doc_id from the documents')
 
 export async function POST(req: Request) {
   const { messages, option, language} = await req.json();
-  const [prompt, collection_catalogue, collection_docs ] = prompt_y_collection(option, language);
   // A partir de la opción (de hub) y el idioma, definimos el prompt y las colecciones
-   
+  const [prompt, collection_catalogue, collection_docs ] = prompt_y_collection(option, language);
 
+  // Model definition
 const result = streamText({
     model: openai("gpt-4o-mini", { structuredOutputs: true }),
     experimental_toolCallStreaming: false,
