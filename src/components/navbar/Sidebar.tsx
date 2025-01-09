@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
         <h3 className="font-semibold text-lg mb-2">Agent language</h3>
         
         {/* Radio buttons para idiomas */}
-        <label className="block-flex items-center mr-4">
+        <label className="block items-center mr-4">
           <input
             type="radio"
             name="language"
@@ -47,10 +47,10 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
             onChange={() => setLanguage("es")}
             className="form-radio"
           />
-          <span className="ml-2 text-2xl">🇪🇸</span> {/* Emoji de la bandera de España */}
+          <span className="ml-2">Spanish</span> {/* Emoji de la bandera de España */}
         </label>
         
-        <label className="inline-flex items-center mr-4">
+        <label className="block items-center mr-4">
           <input
             type="radio"
             name="language"
@@ -59,10 +59,10 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
             onChange={() => setLanguage("en")}
             className="form-radio"
           />
-          <span className="ml-2 text-2xl">🇺🇸</span> {/* Emoji de la bandera de EE. UU. */}
+          <span className="ml-2">English</span> {/* Emoji de la bandera de EE. UU. */}
         </label>
         
-        <label className="inline-flex items-center">
+        <label className="block items-center">
           <input
             type="radio"
             name="language"
@@ -71,7 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
             onChange={() => setLanguage("pt")}
             className="form-radio"
           />
-          <span className="ml-2 text-2xl">🇵🇹</span> {/* Emoji de la bandera de Portugal */}
+          <span className="ml-2">Portuguese</span> {/* Emoji de la bandera de Portugal */}
         </label>
       </div>
     </div>
