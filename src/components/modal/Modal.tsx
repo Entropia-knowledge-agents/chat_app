@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import ActionButton from "../buttons/ActionButton";
-import SendIcon from '@mui/icons-material/Send';
+import SendIcon from "@mui/icons-material/Send";
 
 const style = {
   position: "absolute" as const,
@@ -17,7 +17,7 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 1,
-  px:1,
+  px: 1,
   borderRadius: 2,
 };
 
@@ -25,17 +25,25 @@ interface Props {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   msgId: string;
-  like: boolean | undefined;
-  setLike: React.Dispatch<React.SetStateAction<boolean>>;
+  like: "like" | "dislike" | "neutral";
+  setLike: React.Dispatch<React.SetStateAction<"like" | "dislike" | "neutral">>;
+  origin: "like" | "dislike";
 }
 
-export default function BasicModal({ open, setOpen, msgId, like, setLike }: Props) {
+export default function BasicModal({
+  open,
+  setOpen,
+  msgId,
+  like,
+  setLike,
+  origin,
+}: Props) {
   const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClose = () => setOpen(false);
 
-  const sendReview = async () => {
+  const sendReview = async (deleteReview: boolean = false) => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/feedback", {
@@ -46,18 +54,25 @@ export default function BasicModal({ open, setOpen, msgId, like, setLike }: Prop
         body: JSON.stringify({
           interactionId: msgId,
           feedback,
-          like, // true, false, o undefined
+          like: origin == "like" ? true : false, // true, false, o undefined
+          deleteReview, // true o false
         }),
       });
       if (!res.ok) {
         console.error("Error al enviar feedback");
       } else {
         console.log("Feedback enviado con éxito");
-        setLike(true)
       }
     } catch (err) {
       console.error("Error de fetch:", err);
     } finally {
+      if (deleteReview) {
+        setLike("neutral");
+        setFeedback("");
+      } else {
+        setFeedback("");
+        setLike(origin);
+      }
       setIsLoading(false);
       handleClose();
     }
@@ -69,48 +84,38 @@ export default function BasicModal({ open, setOpen, msgId, like, setLike }: Prop
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      sx={{p:0}}
+      sx={{ p: 0 }}
     >
-      {/** 
-       * Usamos 'position: relative' para poder poner el botón de cerrar 
-       * en la esquina superior derecha con position: absolute 
-       */}
       <Box sx={{ ...style, position: "relative" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignContent: "center",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+          }}
+        >
+          <h2 className="text-lg text-slate-700 px-4 pt-4">
+            {origin === "like"
+              ? "¿Qué hicimos bien?"
+              : "¿En qué podríamos mejorar?"}
+          </h2>
 
-      
-
-        <Box sx={{ display:'flex', alignContent:'center', justifyContent:'space-between',alignItems:'center', mb:2 }}>
-
-        <h2 className="text-lg text-slate-700 px-4 pt-4">
-          {like
-            ? "¡Cuéntanos! ¿Qué hicimos bien?"
-            : "¡Cuéntanos! ¿En qué podríamos mejorar?"}
-        </h2>
-
-        <ActionButton
-          onClick={handleClose}
-          icon={<CloseIcon />}
-          title="Cerrar"
-          size="small"
-        />
-
-        
-
-          
-        
-
-        
-        
-              
+          <ActionButton
+            onClick={handleClose}
+            icon={<CloseIcon />}
+            title="Cerrar"
+            size="small"
+          />
         </Box>
 
-        <Box sx={{mx:2, mb:2}}>
-
-        <textarea
-          value={feedback}
-          onChange={(e) => setFeedback(e.target.value)}
-          disabled={isLoading}
-          className="
+        <Box sx={{ mx: 2, mb: 2 }}>
+          <textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            disabled={isLoading}
+            className="
             mb-4
             w-full
             min-h-[120px]
@@ -131,37 +136,32 @@ export default function BasicModal({ open, setOpen, msgId, like, setLike }: Prop
             disabled:opacity-50
             resize-none
           "
-          placeholder="Tu retroalimentación es muy valiosa."
-        />
+            placeholder="Tu retroalimentación es muy valiosa."
+          />
 
-        <Box sx={{display:'flex', justifyContent:'flex-end', gap:2}}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+            {like !== "neutral" && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => sendReview(true)}
+                disabled={isLoading}
+              >
+                {isLoading ? "Eliminando..." : "Eliminar"}
+              </Button>
+            )}
 
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={sendReview}
-          disabled={isLoading}
-          size="small"
-        >
-        Eliminar
-        </Button>
-
-        <Button
-          variant="contained"
-          onClick={sendReview}
-          disabled={isLoading}
-          endIcon={<SendIcon />}
-          size="small"
-
-        >
-          {isLoading ? "Enviando..." : "Enviar feedback"}
-        </Button>
-
-
+            <Button
+              variant="contained"
+              onClick={() => sendReview()}
+              disabled={isLoading}
+              endIcon={<SendIcon />}
+            >
+              {isLoading ? "Enviando..." : "Enviar feedback"}
+            </Button>
+          </Box>
         </Box>
-      </Box>
       </Box>
     </Modal>
   );
 }
-

@@ -7,7 +7,7 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   try {
     // 1. Leemos el body
-    const { interactionId, feedback, like } = await req.json();
+    const { interactionId, feedback, like, deleteReview } = await req.json();
 
     // 2. Conectamos a la base de datos
     const client = await clientPromise;
@@ -17,11 +17,20 @@ export async function POST(req: Request) {
     // 3. Ejecutamos updateOne
     //    - con $set para actualizar solo esos campos
     //    - upsert: true si deseas que se cree si no existe
-    await coll.updateOne(
-      { interactionId },
-      { $set: { feedback, like } },
-      { upsert: true }
-    );
+
+    if (deleteReview) {
+      await coll.updateOne(
+        { interactionId },
+        { $unset: { feedback: "", like: "" } },
+        { upsert: true }
+      );
+    } else {
+      await coll.updateOne(
+        { interactionId },
+        { $set: { feedback, like } },
+        { upsert: true }
+      );
+    }
 
     // 4. Retornamos una respuesta JSON
     return NextResponse.json({
