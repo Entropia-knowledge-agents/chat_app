@@ -27,25 +27,16 @@ export default function ActionButtons({ msgId }: { msgId: string }) {
    * Además, abrimos el modal.
    */
   const handleLike = () => {
-    setLike((prevLike) => (prevLike === true ? undefined : true));
+    //setLike((prevLike) => (prevLike === true ? undefined : true));
     setOpen(true);
   };
 
-  /**
-   * Manejo de clic en "No me gusta".
-   * Si ya estaba en `false`, lo desmarcamos (a `undefined`).
-   * Si no, lo marcamos a `false`.
-   * Además, abrimos el modal.
-   */
-  const handleDislike = () => {
-    setLike((prevLike) => (prevLike === false ? undefined : false));
-    setOpen(true);
-  };
+
 
   return (
     <div className="flex space-x-2 mt-2">
       {/* Al modal le pasamos las props que necesita */}
-      <Modal open={open} setOpen={setOpen} msgId={msgId} like={like} />
+      <Modal open={open} setOpen={setOpen} msgId={msgId} like={like} setLike={setLike} />
 
       {/* Botón de like */}
       <ActionButton
@@ -60,7 +51,7 @@ export default function ActionButtons({ msgId }: { msgId: string }) {
       <ActionButton
         icon={<ThumbDownAltIcon fontSize="inherit" />}
         title="No me gusta"
-        onClick={handleDislike}
+        onClick={handleLike}
         // Si like es false => color "warning", de lo contrario => "default"
         color={like === false ? "warning" : "default"}
       />

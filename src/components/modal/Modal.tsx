@@ -6,17 +6,18 @@ import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import ActionButton from "../buttons/ActionButton";
+import SendIcon from '@mui/icons-material/Send';
 
 const style = {
   position: "absolute" as const,
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 450,
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
-  // Añadimos un ligero redondeado de esquinas vía MUI:
+  p: 1,
+  px:1,
   borderRadius: 2,
 };
 
@@ -25,9 +26,10 @@ interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   msgId: string;
   like: boolean | undefined;
+  setLike: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function BasicModal({ open, setOpen, msgId, like }: Props) {
+export default function BasicModal({ open, setOpen, msgId, like, setLike }: Props) {
   const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,6 +53,7 @@ export default function BasicModal({ open, setOpen, msgId, like }: Props) {
         console.error("Error al enviar feedback");
       } else {
         console.log("Feedback enviado con éxito");
+        setLike(true)
       }
     } catch (err) {
       console.error("Error de fetch:", err);
@@ -66,25 +69,42 @@ export default function BasicModal({ open, setOpen, msgId, like }: Props) {
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      sx={{p:0}}
     >
       {/** 
        * Usamos 'position: relative' para poder poner el botón de cerrar 
        * en la esquina superior derecha con position: absolute 
        */}
       <Box sx={{ ...style, position: "relative" }}>
-        {/** Botón de Cerrar en la esquina superior derecha */}
-        <ActionButton
-          onClick={handleClose}
-          icon={<CloseIcon />}
-          title="Cerrar"
-          style={{ position: "absolute", top: 8, right: 8 }}
-        />
 
-        <h2 className="mb-3 text-lg text-slate-700">
+      
+
+        <Box sx={{ display:'flex', alignContent:'center', justifyContent:'space-between',alignItems:'center', mb:2 }}>
+
+        <h2 className="text-lg text-slate-700 px-4 pt-4">
           {like
             ? "¡Cuéntanos! ¿Qué hicimos bien?"
             : "¡Cuéntanos! ¿En qué podríamos mejorar?"}
         </h2>
+
+        <ActionButton
+          onClick={handleClose}
+          icon={<CloseIcon />}
+          title="Cerrar"
+          size="small"
+        />
+
+        
+
+          
+        
+
+        
+        
+              
+        </Box>
+
+        <Box sx={{mx:2, mb:2}}>
 
         <textarea
           value={feedback}
@@ -114,18 +134,34 @@ export default function BasicModal({ open, setOpen, msgId, like }: Props) {
           placeholder="Tu retroalimentación es muy valiosa."
         />
 
-        {/**
-         * Botón para enviar el feedback
-         * (Podrías usar también ActionButton si deseas un estilo unificado)
-         */}
+        <Box sx={{display:'flex', justifyContent:'flex-end', gap:2}}>
+
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={sendReview}
+          disabled={isLoading}
+          size="small"
+        >
+        Eliminar
+        </Button>
+
         <Button
           variant="contained"
           onClick={sendReview}
           disabled={isLoading}
+          endIcon={<SendIcon />}
+          size="small"
+
         >
           {isLoading ? "Enviando..." : "Enviar feedback"}
         </Button>
+
+
+        </Box>
+      </Box>
       </Box>
     </Modal>
   );
 }
+
