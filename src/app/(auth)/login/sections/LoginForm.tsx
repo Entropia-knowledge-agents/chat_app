@@ -102,7 +102,8 @@ export default function LoginForm() {
           disabled={isLoading || !email || !password}
           style={{ width: "30%",
           backgroundColor: "#4338ca",
-           }}
+          color: "#f1f5f9",
+          }}
         >
           {isLoading ? "Cargando..." : "Entrar!"}
         </Button>

@@ -8,16 +8,15 @@ interface SidebarProps {
   setLanguage: React.Dispatch<React.SetStateAction<string>>;
 }
 
+// Definir el componente Sidebar
 const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLanguage }) => {
   return (
-    <div className="flex flex-col items-start">
-      {/* Título del menú */}
-      <h2 className="text-lg font-bold mb-4">Menu</h2>
+    <div className="flex flex-col items-start shadow-lg z-30 bg-slate-300 text-slate-700 pl-4 h-[95%] fixed bottom-0">
       {/* Pestaña 1 */}
       <button
-        onClick={() => setOption("OLAS")}
-        className={`w-[250px] px-4 py-2 text-left rounded-l-lg ${
-          option === "OLAS" ? "bg-[#1f2f79] text-white" : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+        onClick={() => setOption("OLAS")} 
+        className={`w-[250px] px-4 py-2 text-left rounded-l-lg mb-2 ${
+          option === "OLAS" ? "bg-[#1f2f79] text-slate-200" : "hover:bg-slate-400"
         }`}
       >
         Hub OLAS
@@ -27,7 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
       <button
         onClick={() => setOption("energia")}
         className={`w-[250px] px-4 py-2 text-left rounded-l-lg ${
-          option === "energia" ? "bg-[#1f2f79] text-white" : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+          option === "energia" ? "bg-[#1f2f79] text-slate-200" : "hover:bg-slate-400"
         }`}
       >
         Hub Energía
@@ -78,4 +77,5 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
   );
 };
 
+// Exportar el componente Sidebar
 export default Sidebar;

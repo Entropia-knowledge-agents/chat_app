@@ -1,23 +1,24 @@
 "use client";
 
 import { ReactNode } from "react";
+import IconButton from '@mui/material/IconButton';
 
 interface ActionButtonProps {
   icon: ReactNode; 
   title: string; 
   onClick: () => void; 
+  color?: "default" | "inherit" | "primary" | "warning" | undefined;
 }
 
-export default function ActionButton({ icon, title, onClick }: ActionButtonProps) {
+export default function ActionButton({ icon, title, onClick, color }: ActionButtonProps) {
   return (
-    <button
+    <IconButton
       onClick={onClick}
-      className="w-7 h-6 rounded-md border border-gray-200 flex items-center justify-center hover:bg-gray-200"
+      size="small"
+      color={color}
       title={title}
     >
-      <div className="text-gray-500 flex items-center justify-center" style={{ fontSize: "16px" }}>
         {icon}
-      </div>
-    </button>
+    </IconButton>
   );
 }
