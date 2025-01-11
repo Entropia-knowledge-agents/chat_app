@@ -10,7 +10,7 @@ interface ChatContextType {
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmit: (
     event: React.FormEvent,
-    options: { body: { option: string; language: string } }
+    options: { body: { option: string} }
   ) => void;
   isLoading: boolean;
   stop: () => void;

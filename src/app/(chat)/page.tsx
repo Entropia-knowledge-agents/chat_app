@@ -12,7 +12,6 @@ import { SessionProvider } from "next-auth/react";
 export default function Home() {
   const { messages } = useChatContext();
   const [option, setOption] = useState<string >('OLAS');
-  const [language, setLanguage] = useState<string>('es');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,8 +27,6 @@ export default function Home() {
         <Sidebar
         option={option} 
         setOption={setOption} 
-        language={language} 
-        setLanguage={setLanguage} 
         />
         {/* Main content */}
         <div className="flex-1 flex flex-col justify-between items-center bg-slate-200 text-slate-700">
@@ -46,7 +43,7 @@ export default function Home() {
             <div ref={messagesEndRef}></div>
           </div>
           <div className="w-full md:w-2/5 bg-neutral-50 p-6 rounded-xl">
-          <ChatInput option={option} language={language} />
+          <ChatInput option={option}/>
           </div>
         </div>
       </div>
