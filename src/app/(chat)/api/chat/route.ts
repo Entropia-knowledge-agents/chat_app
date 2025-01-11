@@ -138,9 +138,6 @@ export async function POST(req: Request) {
   }
 
   const [prompt, collection_catalogue, collection_docs] = prompt_y_collection[key];
-  console.log('---------------------------------')
-  console.log(prompt)
-
    
   // Model definition
 const result = streamText({
