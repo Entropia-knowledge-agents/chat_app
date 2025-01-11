@@ -8,7 +8,7 @@ interface toolProps {
 }
 
 export interface MessageProps {
-  id?: string;
+  id: string;
   content: string;
   role?: string;
   toolInvocations?: toolProps[];

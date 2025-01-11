@@ -12,7 +12,7 @@ function LoadingBubble({ toolName }: { toolName?: string }) {
       ? "Give a second, I'm searching relevant documents..."
       : "Thinking...";
 
-  return <ModelMessages content={name} isLoading={true} />;
+  return <ModelMessages content={name} isLoading={true} id={name} />;
 }
 
 function ChatMessagesBase({ messages }: { messages: MessageProps[] }) {
@@ -35,7 +35,7 @@ function ChatMessagesBase({ messages }: { messages: MessageProps[] }) {
     <div className="w-full p-1 space-y-4">
       {filteredMessages.map((message, ix) =>
         message.role === "user" ? (
-          <UserMessages key={message.id} content={message.content} />
+          <UserMessages key={message.id} content={message.content} id={message.id} />
         ) : (
           <ModelMessages
             key={message.id}

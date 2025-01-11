@@ -11,7 +11,7 @@ interface SidebarProps {
 // Definir el componente Sidebar
 const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLanguage }) => {
   return (
-    <div className="flex flex-col items-start shadow-lg z-30 bg-slate-300 text-slate-700 pl-4 h-[95%] fixed bottom-0">
+    <div className="flex flex-col items-start shadow-lg pt-5 bg-slate-300 text-slate-700 pl-4 h-full  bottom-0">
       {/* Pestaña 1 */}
       <button
         onClick={() => setOption("OLAS")} 
