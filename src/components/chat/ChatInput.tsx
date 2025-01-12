@@ -5,17 +5,16 @@ import { useChatContext } from "@/context/ChatContext";
 
 interface ChatInputProps {
   option: string;
-  language: string;
 }
 
-export default function ChatInput({ option, language }: ChatInputProps) {
+export default function ChatInput({ option }: ChatInputProps) {
   const { input, stop, handleInputChange, handleSubmit, isLoading } =
     useChatContext();
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Evitar salto de línea
-      handleSubmit( e, { body: { option: option, language: language } } ); // Pasa el objeto con los parámetros
+      handleSubmit( e, { body: { option: option} } ); // Pasa el objeto con los parámetros
     }
   };
 
@@ -33,7 +32,7 @@ export default function ChatInput({ option, language }: ChatInputProps) {
       <div className="absolute bottom-2 right-2 flex space-x-2 z-100">
       <IconButtonChat
       name={isLoading ? "stop" : "send"}
-      onClick={isLoading ? stop : () => handleSubmit({} as React.FormEvent, { body: { option: option, language: language } })}
+      onClick={isLoading ? stop : () => handleSubmit({} as React.FormEvent, { body: { option: option} })}
       />
       </div>
     </div>

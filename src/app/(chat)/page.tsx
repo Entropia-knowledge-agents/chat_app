@@ -45,6 +45,8 @@ export default function Home() {
           <div className="md:w-2/5 bg-slate-100 p-6 rounded-xl">
             <ChatInput option={option} language={language} />
           </div>
+          <div className="w-full md:w-2/5 bg-neutral-50 p-6 rounded-xl">
+          <ChatInput option={option}/>
           </div>
         </div>
       </div>

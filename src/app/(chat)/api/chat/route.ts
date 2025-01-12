@@ -1,9 +1,10 @@
 import { openai } from '@ai-sdk/openai';
-import {streamText, tool } from 'ai';
+import {streamText, tool, generateObject } from 'ai';
 import { z } from "zod";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
 import clientPromise from "@/lib/db/mongodb";
+import { Language } from '@mui/icons-material';
 
 // Definimos el prompt dependiendo el Hub y el idioma:
 
@@ -26,7 +27,7 @@ Tu objetivo es tanto recomendar documentos como proporcionar informacion especí
 
 No inventes datos, debes estar seguro que los documentos que escojas responden de manera correcta y específica la pregunta del usuario, si no encuentras información específica mencionalo.
 Recuerda mencionar las referencias en formato Markdown e incluir el número de página.
-SIEMPRE DEBES RESPONDER EN ESPAÑOL.
+Responde en el idioma que te hablan.
 `
 //INGLES:
 
@@ -50,8 +51,7 @@ To do this you have two tools:
 Do not make up information or data, you must be sure that the documents you choose correctly and specifically answer the user's question;
 if you do not find specific information, mention it.
 
-Remember to mention the references in Markdown format and provide the page number.
-YOU SHOULD ALWAYS RESPOND IN ENGLISH`
+Remember to mention the references in Markdown format and provide the page number.`
 
 // PORTUGUES:
 
@@ -71,8 +71,20 @@ const prompt_pt_gral = `O seu objetivo é recomendar documentos e fornecer infor
 
 Não invente dados, deve ter a certeza de que os documentos escolhidos respondem corretamente e especificamente à pergunta do utilizador. Caso não encontre informação específica, mencione-a.
 Lembre-se de mencionar as referências em formato Markdown e de incluir o número da página.
-Deve sempre responder em português.
 `
+// Dependiendo el idioma y el hub seleccionamos la colección y el prompt del siguiente diccionario
+// Valores posibles:
+type ValidKeys = `${any}_${string}`;
+// diccionario:
+const prompt_y_collection: Record<ValidKeys, string[]>  = {
+  'OLAS_spanish': [prompt_es_OLAS + prompt_es_gral, "documents_olas", "content_olas"],
+  'OLAS_english': [prompt_en_OLAS + prompt_en_gral, "documents_olas", "content_olas"],
+  'OLAS_portuguese': [prompt_pt_OLAS + prompt_pt_gral, "documents_olas", "content_olas"],
+  'energy_spanish': [prompt_es_energia + prompt_es_gral, "documents_energy", "content_energy"],
+  'energy_english': [prompt_en_energia + prompt_en_gral, "documents_energy", "content_energy"],
+  'energy_portuguese': [prompt_pt_energia + prompt_pt_gral, "documents_energy", "content_energy"]
+}
+
 export const maxDuration = 30;
 
 // Tool document retriever for catalogue
@@ -97,55 +109,37 @@ async function documentRetriever2(query: string, doc_ids:object, collection_docs
   console.log('docs', retrievedDocs)
   return retrievedDocs;
 }
-
-function prompt_y_collection(option: string, language: string){
-  let prompt: string;
-  let collection_catalogue: string;
-  let collection_docs: string;
-  
-  if (option == 'OLAS') {
-    // para conectarnos al catalogo de olas
-    collection_catalogue = "documents_olas";
-    
-    // para conectarnos a los documentos de olas
-    collection_docs = "content_olas";
-    
-    if (language ==  'es') {
-      prompt = prompt_es_OLAS + prompt_es_gral;
-    }
-    else if (language ==  'en') {
-      prompt = prompt_en_OLAS + prompt_en_gral;
-    }
-    else {
-      prompt = prompt_pt_OLAS + prompt_pt_gral;
-    }
-  }
-
-  else{
-    // para conectarnos al catalogo de energía
-    collection_catalogue = "documents_energy";
-    // para conectarnos a los documentos de energía
-    collection_docs = "content_energy";
-    if (language ==  'es') {
-      prompt = prompt_es_energia + prompt_es_gral;
-    }
-    else if (language ==  'en') {
-      prompt = prompt_en_energia + prompt_en_gral;
-    }
-    else {
-      prompt = prompt_pt_energia + prompt_pt_gral;
-    }
-}
-return [prompt, collection_catalogue, collection_docs];
+// Function to determine the language
+async function language_def(input: string){
+  const { object } = await generateObject({
+    model: openai("gpt-4o-mini", { structuredOutputs: true }),
+    output: 'enum',
+    enum: ['spanish', 'english', 'portuguese', 'unknown'],
+    prompt:
+      'Detrmine the language of this input: ' + input,
+  });
+  return object
 }
 
 const doc_id = z.string().describe('doc_id from the documents')
 
 export async function POST(req: Request) {
-  const { messages, option, language} = await req.json();
+  const { messages, option} = await req.json();
+  const input = messages[messages.length - 1]['content']
   // A partir de la opción (de hub) y el idioma, definimos el prompt y las colecciones
-  const [prompt, collection_catalogue, collection_docs ] = prompt_y_collection(option, language);
+  const language = await language_def(input);
 
+  console.log(language, option)
+
+  let key: ValidKeys;
+  if (language !== 'unknown') {
+    key = `${option}_${language}`;
+  } else {
+    key = `${option}_${'spanish'}`;
+  }
+
+  const [prompt, collection_catalogue, collection_docs] = prompt_y_collection[key];
+   
   // Model definition
 const result = streamText({
     model: openai("gpt-4o-mini", { structuredOutputs: true }),
