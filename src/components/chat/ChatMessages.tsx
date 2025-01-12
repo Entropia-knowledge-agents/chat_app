@@ -1,4 +1,4 @@
-import { UserMessages, ModelMessages, MessageProps } from "./TemplateMessages";
+import { UserMessages, ModelMessages,  MessageProps } from "./TemplateMessages";
 import { memo } from "react";
 import equal from "fast-deep-equal";
 import { useChatContext } from "@/context/ChatContext";
@@ -12,19 +12,15 @@ function LoadingBubble({ toolName }: { toolName?: string }) {
       ? "Give a second, I'm searching relevant documents..."
       : "Thinking...";
 
-  return <ModelMessages content={name} isLoading={true}/>;
+  return <ModelMessages content={name} isLoading={true} id={name} />;
 }
 
-function ChatMessagesBase({ messages}: { messages: MessageProps[]}) {
-  const { awaitingResponse, currentToolCall } = useChatContext();
+function ChatMessagesBase({ messages }: { messages: MessageProps[] }) {
+  const { awaitingResponse, currentToolCall, usageTracking } = useChatContext();
 
   /**
    * Podemos renderizar la lista de mensajes "finales" (user + assistant).
    * Luego, al final, si `awaitingResponse || currentToolCall`, mostramos un bubble de LoadingBubble.
-   *
-   * IMPORTANTE:
-   *   - Filtra (opcional) los mensajes que tengan content vacío y sean toolInvocations
-   *   - Así evitas que aparezcan “mensajes sueltos” con content:""
    */
   const filteredMessages = messages.filter((m) => {
     // Por ejemplo, ignorar mensajes donde content == "" y existan toolInvocations
@@ -37,11 +33,17 @@ function ChatMessagesBase({ messages}: { messages: MessageProps[]}) {
 
   return (
     <div className="w-full p-1 space-y-4">
-      {filteredMessages.map((message) =>
+      {filteredMessages.map((message, ix) =>
         message.role === "user" ? (
-          <UserMessages key={message.id} content={message.content} />
+          <UserMessages key={message.id} content={message.content} id={message.id} />
         ) : (
-          <ModelMessages key={message.id} content={message.content} isLoading={false} />
+          <ModelMessages
+            key={message.id}
+            content={message.content}
+            isLoading={false}
+            usage={usageTracking[ix]?.tokens}
+            id={messages[ix-1].id}
+          />
         )
       )}
 

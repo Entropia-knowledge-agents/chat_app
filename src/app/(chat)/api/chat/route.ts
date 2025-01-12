@@ -3,6 +3,7 @@ import {streamText, tool, generateObject } from 'ai';
 import { z } from "zod";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
+import clientPromise from "@/lib/db/mongodb";
 import { Language } from '@mui/icons-material';
 
 // Definimos el prompt dependiendo el Hub y el idioma:
@@ -162,6 +163,21 @@ const result = streamText({
       ),
   },
   maxSteps: 3,
+  async onFinish({ text, usage, }) {
+    // tu lógica aquí, por ejemplo para guardar historia o contabilizar tokens
+    // write in mongodb the user query, the response and the usage tokens
+    const client = await clientPromise;
+    const db = client.db("rag_lab");
+    const coll = db.collection("logs");
+    await coll.insertOne({
+      user_query: messages[messages.length - 1].content,
+      rag_ctx: prompt,
+      response: text,
+      usageTokens: usage,
+      interactionId : messages[messages.length - 1].id,
+      dateTime : messages[messages.length - 1].createdAt
+    });
+  },
 });
 
 return result.toDataStreamResponse();
