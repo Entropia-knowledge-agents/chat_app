@@ -4,10 +4,8 @@ import { z } from "zod";
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
 import clientPromise from "@/lib/db/mongodb";
-import { Language } from '@mui/icons-material';
 
 // Definimos el prompt dependiendo el Hub y el idioma:
-
 // ESPAÑOL:
 
 const prompt_es_OLAS = `Eres un analista experto en agua y saneamiento en América Latina y el Caribe que trabaja para 
