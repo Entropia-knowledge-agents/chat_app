@@ -30,7 +30,7 @@ export default function Home() {
           <Navbar />
           <div className="flex-1 overflow-y-auto w-full p-8 rounded-tl-3xl bg-slate-200 shadow-xl">
             <div className="w-full justify-center flex items-center">
-              <div className="flex justify-center items-center w-full md:w-2/5 pt-10 ">
+              <div className="flex justify-center items-center w-full md:w-1/2 pt-10 ">
                 {/* ChatMessages se encarga de la lógica de "loading" + tool calls */}
                 <ChatMessages messages={messages} />
               </div>
