@@ -25,8 +25,6 @@ export default function Home() {
         <Sidebar
           option={option}
           setOption={setOption}
-          language={language}
-          setLanguage={setLanguage}
         />
         {/* Main content */}
         <div className="flex-1 flex flex-col justify-between items-center bg-slate-300 text-slate-700">
@@ -43,13 +41,14 @@ export default function Home() {
           </div>
           <div className="w-full bg-slate-200 flex justify-center shadow-xl" >
           <div className="md:w-2/5 bg-slate-100 p-6 rounded-xl">
-            <ChatInput option={option} language={language} />
+            <ChatInput option={option} />
           </div>
           <div className="w-full md:w-2/5 bg-neutral-50 p-6 rounded-xl">
           <ChatInput option={option}/>
           </div>
         </div>
       </div>
+    </div>
     </SessionProvider>
   );
 }
