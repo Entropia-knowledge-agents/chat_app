@@ -7,7 +7,7 @@ interface SidebarProps {
 }
 
 // Definir el componente Sidebar
-const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLanguage }) => {
+const Sidebar: React.FC<SidebarProps> = ({ option, setOption }) => {
 
   return (
     <div className="flex flex-col items-start shadow-lg pt-5 bg-slate-300 text-slate-700 pl-4 h-full  bottom-0">
@@ -25,7 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption, language, setLangu
       <button
         onClick={() => setOption("energy")}
         className={`w-[250px] px-4 py-2 text-left rounded-l-lg ${
-          option === "energia" ? "bg-[#1f2f79] text-slate-200" : "hover:bg-slate-400"
+          option === "energy" ? "bg-[#1f2f79] text-slate-200" : "hover:bg-slate-400"
         }`}
       >
         Hub Energía
