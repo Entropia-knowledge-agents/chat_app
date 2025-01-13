@@ -8,15 +8,16 @@ interface toolProps {
 }
 
 export interface MessageProps {
-  id?: string;
+  id: string;
   content: string;
   role?: string;
   toolInvocations?: toolProps[];
   isLoading?: boolean;
+  usage?: number
 }
 
 export const ModelMessages = memo(
-  function ModelMessages({ content, isLoading }: MessageProps) {
+  function ModelMessages({ id, content, isLoading, usage }: MessageProps) {
     return (
       <div className="grid grid-cols-12">
         <div className="col-span-11 flex items-start space-x-2">
@@ -36,10 +37,15 @@ export const ModelMessages = memo(
               padding: "10px",
             }}
           >
-            {isLoading ? (<p className="loader-shine">{content}</p>) : (
-            <Markdown>{content}</Markdown>
+            {isLoading ? (
+              <p className="loader-shine">{content}</p>
+            ) : (
+              <div>
+                <Markdown>{content}</Markdown>
+                <p>{usage}</p>
+              </div>
             )}
-            <ActionButtons />
+            <ActionButtons msgId={id} />
           </div>
         </div>
 

@@ -4,18 +4,26 @@ import React, { createContext, useContext, useState, useMemo } from "react";
 import { MessageProps } from "@/components/chat/TemplateMessages";
 import { useChat } from "ai/react";
 
+interface MsgUsage {
+  kind : string;
+  tokens : number;
+}
+
 interface ChatContextType {
   input: string;
   messages: MessageProps[];
   handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  handleSubmit: () => void;
+  handleSubmit: (
+    event: React.FormEvent,
+    options: { body: { option: string} }
+  ) => void;
   isLoading: boolean;
   stop: () => void;
-
   /** Nuevo: nombre de la herramienta si hay una llamada activa */
   currentToolCall?: string;
   /** Nuevo: true si estamos esperando la respuesta final (sin tool activa). */
   awaitingResponse: boolean;
+  usageTracking : MsgUsage[]
 }
 
 // Crear el contexto
@@ -26,6 +34,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   // Estado local para guardar qué herramienta se está llamando
   const [toolCall, setToolCall] = useState<string>();
+  const [usageTracking, setUsageTracking] = useState<MsgUsage[]>([]);
 
   const { input, messages, handleInputChange, handleSubmit, isLoading, stop } =
     useChat({
@@ -37,6 +46,20 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
       onError(error) {
         console.error("Error en la IA:", error);
       },
+      onFinish: (_message, { usage }) => {
+        setUsageTracking((prev) => [
+          ...prev,
+          {
+            kind: "prompt",
+            tokens: usage.promptTokens,
+          },
+          {
+            kind: "completion",
+            tokens: usage.completionTokens,
+          },
+        ]);
+      },
+      sendExtraMessageFields : true,
     });
 
   /**
@@ -49,13 +72,14 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     if (
       lastMessage?.toolInvocations &&
       lastMessage.toolInvocations.length > 0 &&
-      // Checamos si coincide con la tool actual en local state
       lastMessage.toolInvocations[0].toolName === toolCall
     ) {
       return toolCall; // p.ej. "getInformation"
     }
     return undefined;
   }, [messages, toolCall]);
+
+
 
   /**
    * awaitingResponse:
@@ -83,7 +107,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         handleSubmit,
         isLoading,
         stop,
-
+        usageTracking,
         // Exponemos estas 2 (o 3) props nuevas
         currentToolCall: currentToolInvocation,
         awaitingResponse,
