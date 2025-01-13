@@ -72,7 +72,7 @@ Lembre-se de mencionar as referências em formato Markdown e de incluir o númer
 `
 // Dependiendo el idioma y el hub seleccionamos la colección y el prompt del siguiente diccionario
 // Valores posibles:
-type ValidKeys = `${any}_${string}`;
+type ValidKeys = `${string}_${string}`;
 // diccionario:
 const prompt_y_collection: Record<ValidKeys, string[]>  = {
   'OLAS_spanish': [prompt_es_OLAS + prompt_es_gral, "documents_olas", "content_olas"],
