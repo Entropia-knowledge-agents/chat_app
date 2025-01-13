@@ -1,4 +1,7 @@
 import React from "react";
+import IconButton from '@mui/material/IconButton';
+import TsunamiIcon from '@mui/icons-material/Tsunami';
+import BoltIcon from '@mui/icons-material/Bolt';
 
 // Definir el tipo para las props
 interface SidebarProps {
@@ -9,27 +12,33 @@ interface SidebarProps {
 // Definir el componente Sidebar
 const Sidebar: React.FC<SidebarProps> = ({ option, setOption }) => {
 
+
+
   return (
-    <div className="flex flex-col items-start shadow-lg pt-5 bg-slate-300 text-slate-700 pl-4 h-full  bottom-0">
+    <div className="flex flex-col items-start shadow-lg pt-[100px] bg-slate-300 text-slate-700 h-full  bottom-0 w-[50px]">
       {/* Pestaña 1 */}
-      <button
+      <IconButton
         onClick={() => setOption("OLAS")} 
-        className={`w-[250px] px-4 py-2 text-left rounded-l-lg mb-2 ${
+        className={`ml-1 pl-3 pr-4 py-2 text-left rounded-l-lg mb-5 ${
           option === "OLAS" ? "bg-[#1f2f79] text-slate-200" : "hover:bg-slate-400"
-        }`}
+        }`} 
+        title="Hub OLAS"  
+        size="medium"     
       >
-        Hub OLAS
-      </button>
+        <TsunamiIcon />
+      </IconButton>
 
       {/* Pestaña 2 */}
-      <button
+      <IconButton
         onClick={() => setOption("energy")}
-        className={`w-[250px] px-4 py-2 text-left rounded-l-lg ${
+        className={`ml-1 pl-3 pr-4 py-2 text-left rounded-l-lg ${
           option === "energy" ? "bg-[#1f2f79] text-slate-200" : "hover:bg-slate-400"
         }`}
+        title="Hub Energía"
+        size="medium"
       >
-        Hub Energía
-      </button>
+        <BoltIcon />
+      </IconButton>
     </div>
   );
 };
