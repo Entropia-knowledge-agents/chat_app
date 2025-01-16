@@ -34,5 +34,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/", "/api/:path*", "/login"],
+  matcher: ["/", "/api/((?!chat).*)", "/login"],
 };
