@@ -173,7 +173,8 @@ const result = streamText({
       response: text,
       usageTokens: usage,
       interactionId : messages[messages.length - 1].id,
-      dateTime : messages[messages.length - 1].createdAt
+      dateTime : messages[messages.length - 1].createdAt,
+      hub: option,
     });
   },
 });
