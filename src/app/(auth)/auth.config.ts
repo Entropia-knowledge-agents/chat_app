@@ -2,6 +2,8 @@ import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts";
 import { getUser } from "@/lib/db/queries/usersquery";
+import clientPromise from "@/lib/db/mongodb";
+
 
 
 export const authConfig: NextAuthOptions = {
@@ -27,6 +29,15 @@ export const authConfig: NextAuthOptions = {
         if (!passwordsMatch) {
           throw new Error("Incorrect password.");
         }
+
+        const client = await clientPromise;
+        const db = client.db("bid");
+        const logs = db.collection("logs");
+        await logs.insertOne({
+          email: credentials.email,
+          action: "login",
+          date: new Date(),
+        });
 
         return {
           id: user.id,
