@@ -2,6 +2,7 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import TsunamiIcon from "@mui/icons-material/Tsunami";
 import BoltIcon from "@mui/icons-material/Bolt";
+import PublicIcon from '@mui/icons-material/Public';
 
 interface SidebarProps {
   option: string;
@@ -65,6 +66,20 @@ const Sidebar: React.FC<SidebarProps> = ({ option, setOption }) => {
         size="medium"
       >
         <BoltIcon />
+      </IconButton>
+
+      {/* Pestaña 3 */}
+      <IconButton
+        onClick={() => setOption("all")}
+        style={{
+          ...iconButtonBaseStyle,
+          backgroundColor: option === "all" ? "#0c4a6e" : "transparent",
+          color: option === "all" ? "#e2e8f0" : "inherit",
+        }}
+        title="Todos los hubs"
+        size="medium"
+      >
+        <PublicIcon />
       </IconButton>
     </div>
   );
