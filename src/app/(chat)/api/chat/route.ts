@@ -76,7 +76,6 @@ const result = streamText({
               return documentRetriever(query, collection_catalogue);
             }
             else{
-              console.log("option_collection_", catalogue)
               return documentRetriever(query, catalogue);
             }
           }
