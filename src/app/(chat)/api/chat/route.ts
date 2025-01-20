@@ -1,5 +1,5 @@
 import { openai } from '@ai-sdk/openai';
-import {streamText, tool, generateObject } from 'ai';
+import {streamText, generateObject } from 'ai';
 import { z } from "zod";
 import clientPromise from "@/lib/db/mongodb";
 import {prompt_es_energia, prompt_en_energia, prompt_pt_energia} from "@/components/utils/prompts_and_tools";
@@ -57,8 +57,6 @@ export async function POST(req: Request) {
   }
 
   const [prompt, collection_catalogue, collection_docs] = prompt_y_collection[key];
-
-  console.log("prompt: ", prompt)
    
   // Model definition
 const result = streamText({
