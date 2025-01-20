@@ -1,10 +1,5 @@
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
-import { z } from "zod";
-
-const doc_id = z.string().describe('doc_id from the documents')
-const option_collection = z.string().describe("Hub you want to search. Options are ['energy' or 'olas']")
-
 
 // Definimos el prompt dependiendo el Hub y el idioma:
 // ESPAÑOL:
