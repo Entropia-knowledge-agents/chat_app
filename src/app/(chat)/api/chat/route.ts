@@ -87,14 +87,14 @@ const result = streamText({
           parameters: z.object({
             query: z.string(), 
             doc_ids: z.array(doc_id).describe('All the doc_ids you consider relevant.'),
-            collection_docs_: z.string().describe("Options are ['energy', 'olas']")
+            collection: z.string().describe("Options are ['energy', 'olas']")
           }),
-          execute: async ({query, doc_ids, collection_docs_}) => {
+          execute: async ({query, doc_ids, collection}) => {
             if (collection_docs != '') {
               return documentRetriever2(query, doc_ids, collection_docs);
             }
             else{
-              return documentRetriever2(query, doc_ids, collection_docs_);
+              return documentRetriever2(query, doc_ids, collection);
             }
           }
         },

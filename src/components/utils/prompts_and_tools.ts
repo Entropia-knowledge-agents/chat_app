@@ -1,6 +1,5 @@
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
-import { tool } from 'ai';
 import { z } from "zod";
 
 const doc_id = z.string().describe('doc_id from the documents')
