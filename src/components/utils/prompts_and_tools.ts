@@ -1,6 +1,7 @@
 import { generateEmbedding } from "@/lib/ai/embeddings";
 import { vectorQuery } from "@/lib/db/queries/vectorquery";
 
+const date = new Date().toISOString().split('T')[0];
 // Definimos el prompt dependiendo el Hub y el idioma:
 // ESPAÑOL:
 
@@ -26,7 +27,8 @@ Tu objetivo es tanto recomendar documentos como proporcionar informacion especí
 
 No inventes datos, debes estar seguro que los documentos que escojas responden de manera correcta y específica la pregunta del usuario, si no encuentras información específica mencionalo.
 Recuerda mencionar las referencias en formato Markdown e incluir el número de página.
-Responde en el idioma que te hablan y evita hablar de información ajena a tu propósito.
+Responde en el idioma que te hablan y evita hablar de información ajena a tu propósito, considera que la fecha es ${date}.
+NO RECOMIENDES NI PROPORCIONES INFORMACIÓN SI NO PUDISTE ACCEDER A LOS DOCUMENTOS.
 `
 //INGLES:
 
@@ -54,6 +56,8 @@ Do not make up information or data, you must be sure that the documents you choo
 if you do not find specific information, mention it.
 
 Remember to mention the references in Markdown format and provide the page number.
+Consider that the date is ${date}.
+DO NOT RECOMMEND OR PROVIDE INFORMATION IF YOU COULD NOT ACCESS THE DOCUMENTS.
 `
 
 // PORTUGUES:
@@ -79,6 +83,8 @@ export const prompt_pt_gral = `O seu objetivo é recomendar documentos e fornece
 
 Não invente dados, deve ter a certeza de que os documentos escolhidos respondem corretamente e especificamente à pergunta do utilizador. Caso não encontre informação específica, mencione-a.
 Lembre-se de mencionar as referências em formato Markdown e de incluir o número da página.
+Responda no idioma falado e evite falar sobre informações não relacionadas ao seu propósito, considere que a data é ${date}.
+NÃO RECOMENDE NEM FORNEÇA INFORMAÇÕES SE VOCÊ NÃO PUDER ACESSAR OS DOCUMENTOS.
 `
 
 
