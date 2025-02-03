@@ -6,7 +6,7 @@ export default withAuth(
     const { pathname } = request.nextUrl;
     const token = request.nextauth.token;
 
-    // Si está en /login y está autenticado, redirigir a /
+    // Redirigir usuarios autenticados que intentan acceder a /login
     if (pathname.startsWith("/login") && token) {
       return NextResponse.redirect(new URL("/", request.url));
     }
@@ -16,7 +16,7 @@ export default withAuth(
       return NextResponse.next();
     }
 
-    // Permitir acceso a otras rutas solo si está autenticado
+    // Redirigir usuarios no autenticados al login
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
@@ -25,14 +25,15 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => !!token, // Usa el token para verificar autenticación
     },
     pages: {
-      signIn: "/login",
+      signIn: "/login", // Ruta personalizada para login
     },
   }
 );
 
 export const config = {
-  matcher: ["/", "/api/((?!chat).*)", "/login"],
+  // Aplica el middleware a todas las rutas excepto a /api/chat y /login
+  matcher: ["/((?!api/chat|login).*)"],
 };
