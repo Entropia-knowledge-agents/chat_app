@@ -10,18 +10,23 @@ const allowedOrigins = [
   "http://localhost:4200"
 ];
 
-
-function setCorsHeaders(response:NextResponse, origin:(string|null)) {
+/**
+ * Añade los encabezados CORS a la respuesta.
+ * @param {NextResponse} response 
+ * @param {string | null} origin 
+ * @returns {NextResponse}
+ */
+function setCorsHeaders(response:NextResponse, origin:(string | null)):NextResponse {
   // Siempre se deben permitir las credenciales (cookies, etc.)
   response.headers.set("Access-Control-Allow-Credentials", "true");
-  // Métodos permitidos
-  response.headers.set("Access-Control-Allow-Methods", "GET,POST");
+  // Métodos permitidos (incluye OPTIONS para preflight)
+  response.headers.set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH,OPTIONS");
   // Encabezados que se pueden enviar en la petición
   response.headers.set(
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization, X-CSRF-Token, X-Requested-With"
   );
-  // Si el origin de la petición está permitido, se lo agrega
+  // Si el origin de la petición está permitido, lo agregamos.
   if (origin && allowedOrigins.includes(origin)) {
     response.headers.set("Access-Control-Allow-Origin", origin);
   }
@@ -34,32 +39,44 @@ export default withAuth(
     const token = request.nextauth.token;
     const origin = request.headers.get("origin");
 
-    // Si es una petición preflight, responde de inmediato con los headers de CORS
+    // 1) Si es preflight (OPTIONS), responder sin redirigir
     if (request.method === "OPTIONS") {
-      const response = NextResponse.next(); // Respuesta vacía, status 200 por defecto
+      const response = NextResponse.next(); // Respuesta 200 por defecto
       return setCorsHeaders(response, origin);
     }
 
-    // Lógica de autenticación:
-    // 1. Redirige usuarios autenticados que intentan acceder a /login
+    // 2) Si la ruta es /login y el usuario YA está autenticado, redirigirlo a "/"
     if (pathname.startsWith("/login") && token) {
       const response = NextResponse.redirect(new URL("/", request.url));
       return setCorsHeaders(response, origin);
     }
 
-    // 2. Permitir acceso a /login (sin autenticar)
+    // 3) Si la ruta es /login y NO está autenticado, permitir acceso
     if (pathname.startsWith("/login")) {
       const response = NextResponse.next();
       return setCorsHeaders(response, origin);
     }
 
-    // 3. Si no hay token, redirige al login
+    // 4) Si la ruta empieza con /api
+    if (pathname.startsWith("/api")) {
+      // Si NO hay token, devolver 401 en vez de redirigir
+      if (!token) {
+        const response = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        return setCorsHeaders(response, origin);
+      }
+      // Si hay token, continúa
+      const response = NextResponse.next();
+      return setCorsHeaders(response, origin);
+    }
+
+    // 5) Resto de rutas (no /login y no /api):
+    //    Si NO hay token, redirigir al login
     if (!token) {
       const response = NextResponse.redirect(new URL("/login", request.url));
       return setCorsHeaders(response, origin);
     }
 
-    // Si todo está en orden, se continúa con la respuesta
+    // 6) Si hay token, permitir
     const response = NextResponse.next();
     return setCorsHeaders(response, origin);
   },
@@ -68,14 +85,15 @@ export default withAuth(
       authorized: ({ token }) => !!token, // Verifica que exista un token
     },
     pages: {
-      signIn: "/login", // Ruta personalizada para el login
+      signIn: "/login", // Ruta personalizada para login
     },
   }
 );
 
-// Configuración del matcher para determinar en qué rutas se aplica este middleware.
-// Ajusta el matcher si deseas incluir (o excluir) rutas específicas.
+/**
+ * Ajusta el matcher si deseas incluir (o excluir) rutas específicas.
+ * En este ejemplo se aplica a todas las rutas excepto /api/chat y /login:
+ */
 export const config = {
-  // En este ejemplo se aplica a todas las rutas excepto /api/chat y /login
   matcher: ["/((?!api/chat|login).*)"],
 };
