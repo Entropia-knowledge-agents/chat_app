@@ -40,7 +40,7 @@ const nextConfig = {
             // ORIGEN permitido: aquí solo se permite 'https://dev-iadb.pantheonsite.io'
             // Si necesitas permitir múltiples orígenes, ve la nota abajo.
             key: 'Access-Control-Allow-Origin',
-            value: 'https://dev-iadb.pantheonsite.io',
+            value: 'https://dev-iadb-d8.pantheonsite.io',
           },
           {
             key: 'Access-Control-Allow-Methods',
