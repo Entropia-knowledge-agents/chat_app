@@ -40,5 +40,5 @@ export default withAuth(
 
 export const config = {
   // Aplica el middleware a todas las rutas excepto a /api/chat, /login y /api/auth/[...nextauth]
-  matcher: ["/((?!api/chat|login|api/auth/.*).*)"],
+  matcher: ["/((?!api/chat|login|api/title|api/auth/.*).*)"],
 };

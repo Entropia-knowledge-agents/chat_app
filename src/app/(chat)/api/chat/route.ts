@@ -1,13 +1,14 @@
 import { openai } from '@ai-sdk/openai';
-import {streamText, generateObject } from 'ai';
+import {streamText } from 'ai';
 import { z } from "zod";
 import clientPromise from "@/lib/db/mongodb";
-import {prompt_es_energia, prompt_en_energia, prompt_pt_energia} from "@/components/utils/prompts_and_tools";
-import {prompt_es_OLAS, prompt_en_OLAS, prompt_pt_OLAS} from "@/components/utils/prompts_and_tools";
-import {prompt_es_gral, prompt_en_gral, prompt_pt_gral} from "@/components/utils/prompts_and_tools";
-import {prompt_es_all, prompt_en_all, prompt_pt_all} from "@/components/utils/prompts_and_tools";
+import {prompt_es_energia, prompt_en_energia, prompt_pt_energia} from "@/lib/ai/prompts_and_tools";
+import {prompt_es_OLAS, prompt_en_OLAS, prompt_pt_OLAS} from "@/lib/ai/prompts_and_tools";
+import {prompt_es_gral, prompt_en_gral, prompt_pt_gral} from "@/lib/ai/prompts_and_tools";
+import {prompt_es_all, prompt_en_all, prompt_pt_all} from "@/lib/ai/prompts_and_tools";
+import detectLanguage from "@/lib/ai/language";
 
-import {documentRetriever, documentRetriever2} from "@/components/utils/prompts_and_tools";
+import {documentRetriever, documentRetriever2} from "@/lib/ai/prompts_and_tools";
 
 const doc_id = z.string().describe('doc_id from the documents')
 
@@ -29,23 +30,13 @@ const prompt_y_collection: Record<ValidKeys, string[]>  = {
 
 export const maxDuration = 30;
 
-// Function to determine the language
-async function language_def(input: string){
-  const { object } = await generateObject({
-    model: openai("gpt-4o-mini", { structuredOutputs: true }),
-    output: 'enum',
-    enum: ['spanish', 'english', 'portuguese', 'unknown'],
-    prompt:
-      'Detrmine the language of this input: ' + input,
-  });
-  return object
-}
+
 
 export async function POST(req: Request) {
   const { messages, option} = await req.json();
   const input = messages[messages.length - 1]['content']
   // A partir de la opción (de hub) y el idioma, definimos el prompt y las colecciones
-  const language = await language_def(input);
+  const language = await detectLanguage(input);
 
   console.log(language, option)
 
