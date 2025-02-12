@@ -39,9 +39,10 @@ export const vectorQuery = async (
           url: 1,
           doc_id:1,
           ctx_chunk:1,
-          score: {
-            $meta: "vectorSearchScore",
-          },
+          page: 1,
+          //score: {
+          //  $meta: "vectorSearchScore",
+          //},
         },
       },
     ];
