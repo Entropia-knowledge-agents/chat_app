@@ -52,7 +52,7 @@ export async function POST(req: Request) {
   // Model definition
 const result = streamText({
     model: openai("gpt-4o-mini", { structuredOutputs: true }),
-    experimental_toolCallStreaming: false,
+    experimental_toolCallStreaming: true,
     system: prompt,
     messages,
     tools: {
