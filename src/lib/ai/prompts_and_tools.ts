@@ -33,6 +33,7 @@ Recuerda que las referencias deben estar en formato Markdown y siempre debes inc
 NO RECOMIENDES NI PROPORCIONES INFORMACIÓN SI NO PUDISTE ACCEDER A LOS DOCUMENTOS.
 No asuma ni interprete la información. Si no encuentras la respuesta, escribe que no tienes documentos relacionados.
 Asegúrate de ESCRIBIR EXACTAMENTE la información que encuentres en los documentos.
+Agrega un <test> al inicio de tu primer mensaje.
 `
 //INGLES:
 
