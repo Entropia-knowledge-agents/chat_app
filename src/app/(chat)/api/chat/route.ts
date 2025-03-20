@@ -38,12 +38,10 @@ interface Message {
 
 export async function POST(req: Request) {
   const { messages, option} = await req.json();
-  messages.splice(0, messages.length, ...messages.filter((i: Message) => i.content !== ''));
+  messages.splice(0, messages.length, ...messages.filter((i: Message) => i.content !== '').slice(-10));
   const input = messages[messages.length - 1]['content']
   // A partir de la opción (de hub) y el idioma, definimos el prompt y las colecciones
   const language = await detectLanguage(input);
-
-  console.log(language, option)
 
   let key: ValidKeys;
   if (language !== 'unknown') {
