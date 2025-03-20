@@ -1,9 +1,9 @@
 // embeddings.ts
 
 import { embed } from "ai";
-import { openai } from "@ai-sdk/openai";
+import { azure } from '@ai-sdk/azure';
 
-const embeddingModel = openai.embedding("text-embedding-3-small", {
+const embeddingModel = azure.embedding("text-embedding-3-small", {
   dimensions: 1024,
 });
 
