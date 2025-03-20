@@ -1,4 +1,4 @@
-import { openai } from '@ai-sdk/openai';
+import { azure } from '@ai-sdk/azure';
 import {streamText } from 'ai';
 import { z } from "zod";
 import clientPromise from "@/lib/db/mongodb";
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
   
   // Model definition
 const result = streamText({
-    model: openai("gpt-4o-mini", { structuredOutputs: true }),
+    model: azure("gpt-4o-mini", { structuredOutputs: true }),
     experimental_toolCallStreaming: true,
     system: prompt,
     messages,

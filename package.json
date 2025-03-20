@@ -3,18 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "HOST=0.0.0.0 PORT=4200 next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "next lint"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.0.6",
+    "@ai-sdk/azure": "^1.2.7",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.9",
-    "ai": "^4.0.11",
+    "ai": "^4.1.66",
     "bcrypt-ts": "^5.0.3",
     "mongodb": "^6.11.0",
     "next": "^14.2.18",

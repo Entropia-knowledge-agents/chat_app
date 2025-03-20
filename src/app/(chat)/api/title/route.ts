@@ -1,4 +1,4 @@
-import { openai } from "@ai-sdk/openai";
+import { azure } from '@ai-sdk/azure';
 import { generateText } from "ai";
 import detectLanguage from "@/lib/ai/language";
 import { NextResponse } from "next/server";
@@ -34,7 +34,7 @@ try {
 
     // Generación del título
     const { text } = await generateText({
-        model: openai("gpt-4o-mini"),
+        model: azure("gpt-4o-mini"),
         temperature: 0.3,
         system: `Eres un especialista en crear títulos concisos y descriptivos.
             - Los títulos deben tener entre 3-10 palabras

@@ -114,6 +114,7 @@ export async function documentRetriever(query: string, collection_catalogue: str
   
 // Tool document retriever for documents
 export async function documentRetriever2(query: string, doc_ids:object, collection_docs: string) {
+    console.log('******** doc_ids: ', doc_ids)
     const filter = {"doc_id": {"$in": doc_ids}}
   
     const { embedding, usageTokens } = await generateEmbedding(query);
