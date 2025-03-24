@@ -7,7 +7,7 @@ interface ChatInputProps {
   option: string;
 }
 
-export default function ChatInput({ option }: ChatInputProps) {
+export default function ChatInput({ option }: Readonly<ChatInputProps>) {
   const { input, stop, handleInputChange, handleSubmit, isLoading } =
     useChatContext();
 
