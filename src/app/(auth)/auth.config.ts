@@ -25,7 +25,7 @@ export const authConfig: NextAuthOptions = {
           throw new Error("No user found with the provided email.");
         }
 
-        const passwordsMatch = await compare(credentials.password, user.password!);
+        const passwordsMatch = await compare(credentials.password, user.password);
         if (!passwordsMatch) {
           throw new Error("Incorrect password.");
         }
@@ -60,7 +60,7 @@ export const authConfig: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (session.user && token.email) {
-        session.user.email = token.email as string;
+        session.user.email = token.email;
       }
       return session;
     },
