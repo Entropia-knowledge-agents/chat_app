@@ -2,12 +2,12 @@ import { ReactNode } from "react";
 import IconButton from "@mui/material/IconButton";
 
 interface ActionButtonProps {
-  icon: ReactNode;
-  title: string;
-  onClick: () => void;
-  color?: "default" | "inherit" | "primary" | "warning" | undefined;
-  size?: "small" | "medium" | undefined;
-  disabled?: boolean;
+  readonly icon: ReactNode;
+  readonly title: string;
+  readonly onClick: () => void;
+  readonly color?: "default" | "inherit" | "primary" | "warning";
+  readonly size?: "small" | "medium";
+  readonly disabled?: boolean;
 }
 
 export default function ActionButton({
@@ -21,7 +21,7 @@ export default function ActionButton({
   return (
     <IconButton
       onClick={onClick}
-      size={size ? size : "small"}
+      size={size ?? "small"}
       color={color}
       title={title}
       disabled={disabled}

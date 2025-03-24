@@ -1,7 +1,6 @@
 'use client';
 import { Button } from "@mui/material";
-import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Navbar() {
