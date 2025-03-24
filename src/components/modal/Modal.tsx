@@ -22,12 +22,12 @@ const style = {
 };
 
 interface Props {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  msgId: string;
-  like: "like" | "dislike" | "neutral";
-  setLike: React.Dispatch<React.SetStateAction<"like" | "dislike" | "neutral">>;
-  origin: "like" | "dislike";
+  readonly open: boolean;
+  readonly setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly msgId: string;
+  readonly like: "like" | "dislike" | "neutral";
+  readonly setLike: React.Dispatch<React.SetStateAction<"like" | "dislike" | "neutral">>;
+  readonly origin: "like" | "dislike";
 }
 
 export default function BasicModal({
@@ -54,7 +54,7 @@ export default function BasicModal({
         body: JSON.stringify({
           interactionId: msgId,
           feedback,
-          like: origin == "like" ? true : false, // true, false, o undefined
+          like: origin == "like", // true, false, o undefined
           deleteReview, // true o false
         }),
       });

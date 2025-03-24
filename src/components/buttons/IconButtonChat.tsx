@@ -8,7 +8,7 @@ interface IconButtonChatProps {
   onClick: () => void; // Función al hacer clic
 }
 
-export default function IconButtonChat({ name, onClick, disabled }: IconButtonChatProps) {
+export default function IconButtonChat({ name, onClick, disabled }: Readonly<IconButtonChatProps>) {
   let IconComponent;
   switch (name) {
     case "send":

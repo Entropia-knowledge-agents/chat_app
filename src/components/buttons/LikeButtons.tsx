@@ -7,7 +7,7 @@ import Modal from "@/components/modal/Modal";
 import { useState } from "react";
 import { useChatContext } from "@/context/ChatContext";
 
-export default function ActionButtons({ msgId }: { msgId: string }) {
+export default function ActionButtons({ msgId }: { readonly msgId: string }) {
 
   const { isLoading } = useChatContext();
 
