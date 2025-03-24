@@ -5,15 +5,12 @@ if (!process.env.MONGODB_URI) {
   throw new Error("Please add your Mongo URI to .env");
 }
 
-const uri: string = process.env.MONGODB_URI as string;
+const uri: string = process.env.MONGODB_URI;
 const options: MongoClientOptions = {
   connectTimeoutMS: 10000, // 10 segundos
   socketTimeoutMS: 45000, // 45 segundos
   serverSelectionTimeoutMS: 45000, // 45 segundos
 };
-
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
 
 // Extender el tipo global para incluir _mongoClientPromise
 declare global {
@@ -21,19 +18,25 @@ declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-if (process.env.NODE_ENV === 'development') {
-  // En modo desarrollo, se usa una variable global para que el cliente
-  // no se recree en cada recarga del módulo
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+// Función para inicializar la promesa del cliente
+function createClientPromise(): Promise<MongoClient> {
+  if (process.env.NODE_ENV === 'development') {
+    // En modo desarrollo, se usa una variable global para que el cliente
+    // no se recree en cada recarga del módulo
+    if (!global._mongoClientPromise) {
+      const client = new MongoClient(uri, options);
+      global._mongoClientPromise = client.connect();
+    }
+    return global._mongoClientPromise;
+  } else {
+    // En producción, es mejor no usar una variable global
+    const client = new MongoClient(uri, options);
+    return client.connect();
   }
-  clientPromise = global._mongoClientPromise!;
-} else {
-  // En producción, es mejor no usar una variable global
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
 }
+
+// Inicializar clientPromise como una constante
+const clientPromise = createClientPromise();
 
 // Función para cerrar la conexión
 export async function closeConnection(): Promise<void> {

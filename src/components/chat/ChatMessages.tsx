@@ -4,18 +4,18 @@ import equal from "fast-deep-equal";
 import { useChatContext } from "@/context/ChatContext";
 
 // Un "spinner" dummy
-function LoadingBubble({ toolName }: { toolName?: string }) {
-  const name =
-    toolName === "documentRetriever"
-      ? "Looking for the content of relevant documents..."
-      : toolName === "catalogueRetriever"
-      ? "Give a second, I'm searching relevant documents..."
-      : "Thinking...";
+function LoadingBubble({ toolName }: { readonly toolName?: string }) {
+  let name = "Thinking...";
+  if (toolName === "documentRetriever") {
+    name = "Looking for the content of relevant documents...";
+  } else if (toolName === "catalogueRetriever") {
+    name = "Give a second, I'm searching relevant documents...";
+  }
 
   return <ModelMessages content={name} isLoading={true} id={name} />;
 }
 
-function ChatMessagesBase({ messages }: { messages: MessageProps[] }) {
+function ChatMessagesBase({ messages }: { readonly messages: readonly MessageProps[] }) {
   const { awaitingResponse, currentToolCall, usageTracking } = useChatContext();
 
   /**

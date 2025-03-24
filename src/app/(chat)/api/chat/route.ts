@@ -2,13 +2,14 @@ import { azure } from '@ai-sdk/azure';
 import {streamText } from 'ai';
 import { z } from "zod";
 import clientPromise from "@/lib/db/mongodb";
-import {prompt_es_energia, prompt_en_energia, prompt_pt_energia} from "@/lib/ai/prompts_and_tools";
-import {prompt_es_OLAS, prompt_en_OLAS, prompt_pt_OLAS} from "@/lib/ai/prompts_and_tools";
-import {prompt_es_gral, prompt_en_gral, prompt_pt_gral} from "@/lib/ai/prompts_and_tools";
-import {prompt_es_all, prompt_en_all, prompt_pt_all} from "@/lib/ai/prompts_and_tools";
+import {
+  prompt_es_energia, prompt_en_energia, prompt_pt_energia,
+  prompt_es_OLAS, prompt_en_OLAS, prompt_pt_OLAS,
+  prompt_es_gral, prompt_en_gral, prompt_pt_gral,
+  prompt_es_all, prompt_en_all, prompt_pt_all,
+  documentRetriever, documentRetriever2
+} from "@/lib/ai/prompts_and_tools";
 import detectLanguage from "@/lib/ai/language";
-
-import {documentRetriever, documentRetriever2} from "@/lib/ai/prompts_and_tools";
 
 const doc_id = z.string().describe('doc_id from the documents')
 
