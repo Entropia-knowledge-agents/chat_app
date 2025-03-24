@@ -98,21 +98,31 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     return false;
   }, [isLoading, currentToolInvocation, messages]);
 
+  const contextValue = useMemo(() => ({
+    input,
+    messages,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    stop,
+    usageTracking,
+    // Exponemos estas 2 (o 3) props nuevas
+    currentToolCall: currentToolInvocation,
+    awaitingResponse,
+  }), [
+    input,
+    messages,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    stop,
+    usageTracking,
+    currentToolInvocation,
+    awaitingResponse,
+  ]);
+
   return (
-    <ChatContext.Provider
-      value={{
-        input,
-        messages,
-        handleInputChange,
-        handleSubmit,
-        isLoading,
-        stop,
-        usageTracking,
-        // Exponemos estas 2 (o 3) props nuevas
-        currentToolCall: currentToolInvocation,
-        awaitingResponse,
-      }}
-    >
+    <ChatContext.Provider value={contextValue}>
       {children}
     </ChatContext.Provider>
   );
