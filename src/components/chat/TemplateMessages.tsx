@@ -3,7 +3,7 @@ import ActionButtons from "../buttons/LikeButtons";
 import { Markdown } from "@/components/utils/Markdown";
 import { memo } from "react";
 
-interface toolProps {
+interface ToolProps {
   toolName: string;
 }
 
@@ -11,7 +11,7 @@ export interface MessageProps {
   id: string;
   content: string;
   role?: string;
-  toolInvocations?: toolProps[];
+  toolInvocations?: ToolProps[];
   isLoading?: boolean;
   usage?: number
 }
