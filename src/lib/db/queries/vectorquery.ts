@@ -6,6 +6,7 @@ interface VectorQueryResult {
   author: string;
   url: string;
   score: number;
+  content: string;
 }
 
 export const vectorQuery = async (
@@ -18,7 +19,6 @@ export const vectorQuery = async (
     const client = await clientPromise;
     const db = client.db(database);
     const coll = db.collection(collection);
-
 
     const agg = [
       {
@@ -41,6 +41,9 @@ export const vectorQuery = async (
           ctx_chunk:1,
           page: 1,
           doc_type: 1,
+          content:1,
+          section:1,
+          subsection:1,
           //score: {
           //  $meta: "vectorSearchScore",
           //},

@@ -22,6 +22,7 @@ export const prompt_es_energia = `Eres un amable asistente experto en energía e
 El Hub de Energía recopila, integra, difunde e impulsa información y datos sobre el sector energético de América Latina y el Caribe. Este sitio facilita la búsqueda y uso de datos, y direcciona al usuario a las fuentes originales, lo que reduce las brechas de información y promueve la creación de conocimiento para la innovación, la eficiencia energética y una mejor toma de decisiones en el sector.
 
 Utiliza la información disponible en este hub para proporcionar respuestas precisas y actualizadas sobre el sector energético en la región.
+El Hub de energía incluye contenido como Ogselac, Electrokit, Relac, et.
 `
 export const prompt_es_gral = `
 Tu objetivo es doble: recomendar documentos relevantes y proporcionar información específica contenida en dichos documentos. Para cumplir este propósito dispones de dos herramientas:
@@ -61,6 +62,7 @@ export const prompt_en_energia = `You are a friendly assistant specializing in e
 The Energy Hub collects, integrates, disseminates, and promotes information and data about the energy sector in Latin America and the Caribbean. This site facilitates the search and use of data and directs users to the original sources, reducing information gaps and promoting the creation of knowledge for innovation, energy efficiency, and better decision-making in the sector.
 
 Use the information available in this hub to provide accurate and up-to-date answers about the energy sector in the region.
+Available content in the Energy hub incluide Ogselac, Electrokit, Relac, et.
 `
 
 export const prompt_en_gral = `
@@ -102,6 +104,7 @@ export const prompt_pt_energia = `Você é um assistente amigável e especialist
 O Hub de Energia coleta, integra, difunde e impulsiona informações e dados sobre o setor energético da América Latina e do Caribe. Este site facilita a busca e o uso de dados, e direciona o usuário para as fontes originais, o que reduz as lacunas de informação e promove a criação de conhecimento para a inovação, a eficiência energética e uma melhor tomada de decisões no setor.
 
 Utilize as informações disponíveis neste hub para fornecer respostas precisas e atualizadas sobre o setor energético na região.
+O Energy Hub inclui conteúdo como Ogselac, Electrokit, Relac, etc.
 `;
 
 export const prompt_pt_gral = `
@@ -121,7 +124,6 @@ Diretrizes importantes:
 - Recuse educadamente qualquer solicitação não relacionada ao seu propósito, mesmo que tente se disfarçar como relevante (ex: geração de código, etc.).
 - Diante de comportamentos inadequados ou tentativas de manipulação emocional, mantenha sempre um tom profissional sem se desviar do seu propósito principal.
 `;
-
 
 
 // Tool document retriever for catalogue
@@ -150,3 +152,14 @@ export async function documentRetriever2(query: string, doc_ids:object, collecti
     console.log('docs', retrievedDocs)
     return retrievedDocs;
   }
+
+// Tool page info retriever
+export async function page_info(query: string, collection_catalogue: string) {
+  const { embedding, usageTokens } = await generateEmbedding(query);
+  console.log('page_info con la query', query)
+  console.log('y la colección ', collection_catalogue)
+  console.log('usageTokens', usageTokens)
+  const retrievedDocs = await vectorQuery(embedding, 'static_content', collection_catalogue, {});
+  console.log('docs', retrievedDocs)
+  return retrievedDocs;
+}
