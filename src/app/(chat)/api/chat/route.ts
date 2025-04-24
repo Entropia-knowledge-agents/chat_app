@@ -2,13 +2,10 @@ import { azure } from '@ai-sdk/azure';
 import {streamText } from 'ai';
 import { z } from "zod";
 import clientPromise from "@/lib/db/mongodb";
-import {
-  prompt_es_energia, prompt_en_energia, prompt_pt_energia,
-  prompt_es_OLAS, prompt_en_OLAS, prompt_pt_OLAS,
-  prompt_es_gral, prompt_en_gral, prompt_pt_gral,
-  prompt_es_all, prompt_en_all, prompt_pt_all,
-  documentRetriever, documentRetriever2
-} from "@/lib/ai/prompts_and_tools";
+import {prompt_es_energia, prompt_es_OLAS, prompt_es_gral, prompt_es_all} from "@/lib/ai/prompts/prompts_es"
+import {prompt_en_energia, prompt_en_OLAS, prompt_en_gral, prompt_en_all} from "@/lib/ai/prompts/prompts_en"
+import {prompt_pt_energia, prompt_pt_OLAS, prompt_pt_gral, prompt_pt_all} from "@/lib/ai/prompts/prompts_pt"
+import {documentRetriever, documentRetriever2, page_info} from "@/lib/ai/tools";
 import detectLanguage from "@/lib/ai/language";
 
 const doc_id = z.string().describe('doc_id from the documents')
@@ -77,7 +74,7 @@ const result = streamText({
         },
         documentRetriever: 
         {
-          description: 'Use it read the available documents based on the document_id gotten from the tool catalogueRetriever. Query should be in spanish.',
+          description: 'Use it to read the available documents based on the document_id gotten from the tool catalogueRetriever. Query should be in spanish.',
           parameters: z.object({
             query: z.string(), 
             doc_ids: z.array(doc_id).describe('All the doc_ids you consider relevant.'),
@@ -89,6 +86,22 @@ const result = streamText({
             }
             else{
               return documentRetriever2(query, doc_ids, collection);
+            }
+          }
+        },
+        page_info_retriever: 
+        {
+          description: 'Use it to get the available content in the page (hub) you are hosted. Query should be in spanish.',
+          parameters: z.object({
+            query: z.string(), 
+            collection: z.string().describe("Options are ['energy']")
+          }),
+          execute: async ({query, collection}) => {
+            if (collection_docs != '') {
+              return page_info(query, collection_docs);
+            }
+            else{
+              return page_info(query, collection);
             }
           }
         },
@@ -114,4 +127,3 @@ const result = streamText({
 
 return result.toDataStreamResponse();
 }
-
