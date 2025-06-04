@@ -26,12 +26,12 @@ jobs:
       # Paso 3: Cargar las variables de entorno necesarias
       - name: Set environment variables
         run: |
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
+          echo "MONGODB_URI_AGENT=${{ secrets.MONGODB_URI_AGENT }}" >> $GITHUB_ENV
 
       # Paso 4: Crear el archivo .env (opcional pero recomendado)
       - name: Create .env file
         run: |
-          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > .env
+          echo "MONGODB_URI_AGENT=${{ secrets.MONGODB_URI_AGENT }}" > .env
 
       - name: npm install, build
         run: |
