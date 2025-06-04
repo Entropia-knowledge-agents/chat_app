@@ -1,7 +1,6 @@
 import { azure } from '@ai-sdk/azure';
 import {streamText } from 'ai';
 import { z } from "zod";
-import clientPromise from "@/lib/db/mongodb";
 import {prompt_es_energia, prompt_es_OLAS, prompt_es_gral, prompt_es_all} from "@/lib/ai/prompts/prompts_es"
 import {prompt_en_energia, prompt_en_OLAS, prompt_en_gral, prompt_en_all} from "@/lib/ai/prompts/prompts_en"
 import {prompt_pt_energia, prompt_pt_OLAS, prompt_pt_gral, prompt_pt_all} from "@/lib/ai/prompts/prompts_pt"
@@ -52,7 +51,7 @@ export async function POST(req: Request) {
   
   // Model definition
 const result = streamText({
-    model: azure("gpt-4o-mini", { structuredOutputs: true }),
+    model: azure("gpt-4.1-mini", { structuredOutputs: true }),
     experimental_toolCallStreaming: true,
     system: prompt,
     messages,
@@ -107,12 +106,14 @@ const result = streamText({
         },
   },
   maxSteps: 3,
+  /**
   async onFinish({ text, usage, }) {
     // tu lógica aquí, por ejemplo para guardar historia o contabilizar tokens
     // write in mongodb the user query, the response and the usage tokens
     const client = await clientPromise;
     const db = client.db("rag_lab");
     const coll = db.collection("logs");
+    
     await coll.insertOne({
       user_query: messages[messages.length - 1].content,
       rag_ctx: prompt,
@@ -123,7 +124,9 @@ const result = streamText({
       hub: option,
     });
   },
+  */
 });
+
 
 return result.toDataStreamResponse();
 }

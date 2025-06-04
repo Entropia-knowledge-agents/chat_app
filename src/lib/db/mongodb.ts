@@ -1,11 +1,11 @@
 import { MongoClient, MongoClientOptions } from "mongodb";
 
 // Asegúrate de que la URI de MongoDB está definida
-if (!process.env.MONGODB_URI) {
+if (!process.env.MONGODB_URI_AGENT) {
   throw new Error("Please add your Mongo URI to .env");
 }
 
-const uri: string = process.env.MONGODB_URI;
+const uri: string = process.env.MONGODB_URI_AGENT;
 const options: MongoClientOptions = {
   connectTimeoutMS: 10000, // 10 segundos
   socketTimeoutMS: 45000, // 45 segundos
